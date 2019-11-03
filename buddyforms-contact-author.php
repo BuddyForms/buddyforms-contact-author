@@ -80,6 +80,7 @@ class BuddyFormsContactAuthor {
 	public function includes() {
 		require_once BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH . 'form-elements.php';
 		require_once BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH . 'functions.php';
+		require_once BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH . 'contact-author-mail.php';
 	}
 
 	/**

@@ -21,12 +21,21 @@ function buddyforms_contact_author_admin_settings_sidebar_metabox_html() {
 	if ( isset( $buddyform['contact_author'] ) ) {
 		$contact_author = $buddyform['contact_author'];
 	}
-
+	$contact_author_message_text = false;
+	if ( isset( $buddyform['contact_author_message_text'] ) ) {
+		$contact_author_message_text = $buddyform['contact_author_message_text'];
+	}
 
 	$form_setup[] = new Element_Checkbox( "<b>" . __( 'Enable Contact Author for this form entries', 'buddyforms' ) . "</b>", "buddyforms_options[contact_author]", array( "contact_author" => "Add contact author button to the form" ), array(
 		'value'     => $contact_author,
 		'shortDesc' => __( '', 'buddyforms' )
 	) );
+	$form_setup[] = new Element_Textarea( "<b>" . __( 'Message Text', 'buddyforms' ) . "</b>", "buddyforms_options[contact_author_message_text]", array(
+		'value'     => $contact_author_message_text,
+		'shortDesc' => __( '', 'buddyforms' )
+	) );
+
+
 
 	buddyforms_display_field_group_table( $form_setup );
 
