@@ -170,7 +170,6 @@ function buddyforms_contact_author() {
 
 	$result = wp_mail( $mail_to, $subject, $message, $mailheaders );
 
-
 	if ( ! $result ) {
 		$json['test'] .= __( 'There has been an error sending the message!', 'buddyforms' );
 	}
