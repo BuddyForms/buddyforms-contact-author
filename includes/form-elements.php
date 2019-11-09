@@ -29,6 +29,12 @@ function buddyforms_contact_author_admin_settings_sidebar_metabox_html() {
 		'shortDesc' => __( '', 'buddyforms' )
 	) );
 
+	$contact_author_logged_in_only    = isset( $buddyform['contact_author_logged_in_only'] ) ? $buddyform['contact_author_logged_in_only'] : '';
+	$form_setup[] = new Element_Checkbox( "<b>" . __( 'Logged in user only', 'buddyforms' ) . "</b>", "buddyforms_options[contact_author_logged_in_only]", array( "logged_in_only" => "Only logged in users can contact authors" ), array(
+		'value'     => $contact_author_logged_in_only,
+		'shortDesc' => __( '', 'buddyforms' )
+	) );
+
 	$form_setup[] = new Element_Textbox( "<b>" . __( 'Subject Text', 'buddyforms' ) . "</b>", "buddyforms_options[contact_author_message_subject]", array(
 		'value'     => $contact_author_message_subject,
 		'shortDesc' => __( '', 'buddyforms' )

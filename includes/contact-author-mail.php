@@ -13,6 +13,10 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
 
             var ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 
+            function bfisEmail(email) {
+                var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                return regex.test(email);
+            }
 
             jQuery(document).on("click", '#buddyforms_contact_author_<?php echo $post_id ?>', function (evt) {
 
@@ -21,12 +25,12 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
                 var contact_author_email_from = jQuery('#contact_author_email_from_<?php echo $post_id ?>').val();
                 var contact_author_email_message = jQuery('#contact_author_email_message_<?php echo $post_id ?>').val();
 
-                if (contact_author_email_from == '') {
-                    alert('Mail From is a required field');
+                if ( ! bfisEmail(contact_author_email_from)) {
+                    alert('Please enter a valid email address');
                     return false;
                 }
                 if (contact_author_email_subject == '') {
-                    alert('Mail Subject is a required field');
+                    alert('Subject is a required field');
                     return false;
                 }
                 if (contact_author_email_message == '') {
@@ -76,7 +80,7 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
         }
     </style>
 
-	<?php echo '<a id="buddyforms-contact-author-from-post-id- ' . $post_id . '" href="#TB_inline?width=800&height=600&inlineId=buddyforms_contact_author_modal_' . $post_id . '" title="' . __( 'Contact the Author', 'buddyforms' ) . '" class="thickbox"><span aria-label="' . __( 'Contact the Author', 'buddyforms' ) . '" title="' . __( 'Contact the Author', 'buddyforms' ) . '" class="dashicons dashicons-trash"> </span> ' . __( 'Contact the Author', 'buddyforms' ) . '</a>'; ?>
+	<?php echo '<a id="buddyforms-contact-author-from-post-id- ' . $post_id . '" href="#TB_inline?width=800&height=600&inlineId=buddyforms_contact_author_modal_' . $post_id . '" title="' . __( 'Contact the Author', 'buddyforms' ) . '" class="thickbox"><span aria-label="' . __( 'Contact the Author', 'buddyforms' ) . '" title="' . __( 'Contact the Author', 'buddyforms' ) . '" class="dashicons dashicons-email"> </span> ' . __( 'Contact the Author', 'buddyforms' ) . '</a>'; ?>
 
     <div id="buddyforms_contact_author_modal_<?php echo $post_id ?>" style="display:none;">
         <div id="buddyforms_contact_author_wrap">
@@ -85,14 +89,13 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
 			<?php
 
 			// Create the form object
-			$form_slug = "buddyforms_contact_author_post_" . $post_id;
+			$message_form_slug = "buddyforms_contact_author_post_" . $post_id;
 
-			$contact_author_form = new Form( $form_slug );
-
+			$contact_author_form = new Form( $message_form_slug );
 
 			// Set the form attribute
 			$contact_author_form->configure( array(
-				"prevent" => array( "bootstrap", "jQuery", "focus" ),
+				"prevent" => array( "bootstrap", "jQuery", "focus", '' ),
 				'method'  => 'post'
 			) );
 			$contact_author_form->addElement( new Element_Email( 'Your eMail Address', 'contact_author_email_from_' . $post_id, array( 'required' => 'required' ) ) );
@@ -103,12 +106,10 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
 			$contact_author_request_message = isset( $buddyforms[ $form_slug ]['contact_author_message_text'] ) ? $buddyforms[ $form_slug ]['contact_author_message_text'] : '';
 			$contact_author_form->addElement( new Element_Textarea( 'Add a Message', 'contact_author_email_message_' . $post_id, array(
 				'value' => $contact_author_request_message,
-				'class' => 'collaburative-publishiing-message'
+				'class' => ''
 			) ) );
 
-
 			$contact_author_form->render();
-
 			?>
 
             <br>
@@ -189,6 +190,8 @@ function buddyforms_contact_author() {
 	$emailBody    = str_replace( '[site_url]', $siteurl, $emailBody );
 	$emailBody    = str_replace( '[site_url_html]', $siteurlhtml, $emailBody );
 
+	$emailBody = apply_filters('buddyforms_contact_author_message_text', $emailBody, $post_id, $form_slug );
+
 	$emailBody = stripslashes( htmlspecialchars_decode( $emailBody ) );
 
 	$mailheaders = "MIME-Version: 1.0\n";
@@ -204,7 +207,6 @@ function buddyforms_contact_author() {
 	if ( ! $result ) {
 		$json['test'] .= __( 'There has been an error sending the message!', 'buddyforms' );
 	}
-	$json['test'] .= 'Author Contacted';
 
 	echo json_encode( $json );
 
@@ -216,45 +218,25 @@ add_action( 'init', 'buddyforms_contact_author_post_request' );
 
 function buddyforms_contact_author_post_request() {
 
-	if ( isset( $_GET['bf_contact_author_post_request'] ) ) {
+	if ( isset( $_GET['bf_offer_complete_request'] ) ) {
 
 		$key     = $_GET['key'];
-		$post_id = $_GET['bf_contact_author_post_request'];
-		$user_id = $_GET['user'];
+		$post_id = $_GET['bf_offer_complete_request'];
 		$nonce   = $_GET['nonce'];
 
 
-		if ( ! wp_verify_nonce( $nonce, 'buddyform_contact_author_post_moderator_keys' ) ) {
+		if ( ! wp_verify_nonce( $nonce, 'buddyform_bf_offer_complete_request_keys' ) ) {
 			//	return false;
 		}
 
+		wp_update_post(array(
+			'ID'    =>  $post_id,
+			'post_status'   =>  'draft'
+		));
 
-		$buddyform_contact_author_post_moderator = get_user_meta( $user_id, 'buddyform_contact_author_post_moderator_key_' . $post_id, true );
-
-
-		if ( isset( $buddyform_contact_author_post_moderator ) ) {
-			if ( $key == $buddyform_contact_author_post_moderator ) {
-				// Delete moderator from meta and taxonomies
-				buddyforms_cpublishing_contact_author_post( $post_id, $user_id );
-
-
-				$post_moderators = wp_get_post_terms( $post_id, 'buddyforms_moderators' );
-
-				$post_count = count( $post_moderators );
-				if ( $post_count == 0 ) {
-					do_action( 'buddyforms_contact_author_post', $post_id );
-					wp_contact_author_post( $post_id );
-				}
-
-			}
-		}
-
-
-		// if only author is left and the author also has approved teh contact_author, the post should get contact_authord
 
 
 		add_action( 'wp_head', 'buddyforms_contact_author_post_request_success' );
-		//add_action('wp_head', 'buddyforms_contact_author_post_request_error');
 	}
 }
 
@@ -263,19 +245,8 @@ function buddyforms_contact_author_post_request_success() {
 	?>
     <script>
         jQuery(document).ready(function () {
-            alert('Delete Done');
+            alert('Offer is set to completed');
             document.location.href = "/";
-        });
-    </script>
-	<?php
-}
-
-function buddyforms_contact_author_post_request_error() {
-
-	?>
-    <script>
-        jQuery(document).ready(function () {
-            alert('Delete Error');
         });
     </script>
 	<?php
