@@ -231,7 +231,7 @@ function buddyforms_contact_author_post_request() {
 
 		wp_update_post(array(
 			'ID'    =>  $post_id,
-			'post_status'   =>  'draft'
+			'post_status'   =>  'completed'
 		));
 
 

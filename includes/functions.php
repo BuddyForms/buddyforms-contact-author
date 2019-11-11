@@ -42,7 +42,25 @@ function buddyforms_contact_author_message_text( $emailBody, $post_id, $form_slu
 }
 
 add_filter( 'buddyforms_blocks_the_loop_post_status', 'buddyforms_blocks_the_loop_post_status', 1, 3 );
+add_filter( 'buddyforms_shortcode_the_loop_post_status', 'buddyforms_blocks_the_loop_post_status', 1, 3 );
 
 function buddyforms_blocks_the_loop_post_status($post_status, $form_slug){
 	$post_status['completed'] = 'completed';
+	return $post_status;
 }
+
+
+/**
+ * Add 'completed' post status.
+ */
+function buddyforms_contact_author_post_status(){
+	register_post_status( 'completed', array(
+		'label'                     => _x( 'Completed', 'buddyforms' ),
+		'public'                    => true,
+		'exclude_from_search'       => false,
+		'show_in_admin_all_list'    => true,
+		'show_in_admin_status_list' => true,
+		'label_count'               => _n_noop( 'Unread <span class="count">(%s)</span>', 'Completed <span class="count">(%s)</span>' ),
+	) );
+}
+add_action( 'init', 'buddyforms_contact_author_post_status' );
