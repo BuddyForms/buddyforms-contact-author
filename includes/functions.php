@@ -64,3 +64,36 @@ function buddyforms_contact_author_post_status(){
 	) );
 }
 add_action( 'init', 'buddyforms_contact_author_post_status' );
+
+
+// Hook into the the-loop.php template and add an new table head
+add_action('buddyforms_the_thead_th_after_title', 'my_buddyforms_the_thead_tr_inner_last', 10, 2);
+function my_buddyforms_the_thead_tr_inner_last($post_id, $form_slug){
+	// Check if this is the correct form.
+	// Change "FORM_SLUG" to your form
+	if($form_slug != 'post-form-2'){
+		return;
+	}
+	// Add a label to the table change 'Label' to your needs
+	?><th class="title"><span><?php _e( 'Date', 'buddyforms' ); ?></span></th><?php
+	?><th class="title"><span><?php _e( 'Text', 'buddyforms' ); ?></span></th><?php
+}
+
+
+// Add the td to the table row with the value of the post meta
+add_action('buddyforms_the_table_td_after_title_last', 'my_buddyforms_the_table_tr_last', 10, 2);
+function my_buddyforms_the_table_tr_last($post_id, $form_slug) {
+	// Check if this is the correct form.
+	// Change "FORM_SLUG" to your form
+	if ( $form_slug != 'post-form-2' ) {
+		return;
+	}
+	// Get the post meta by the form element slug
+	// Change the "SLUG" to the form element slug.
+	$date = get_post_meta( $post_id, 'date', true );
+	$text = get_post_meta( $post_id, 'Text', true );
+
+	// Display the td with the value
+	echo '<td>' . $date . '</td>';
+	echo '<td>' . $text . '</td>';
+}
