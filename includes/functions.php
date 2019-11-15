@@ -24,7 +24,6 @@ function buddyforms_contact_author_the_loop_actions( $post_id ) {
 add_filter( 'buddyforms_contact_author_message_text', 'buddyforms_contact_author_message_text', 1, 3 );
 
 function buddyforms_contact_author_message_text( $emailBody, $post_id, $form_slug ) {
-	$emailBody .= 'noch was drann pappen';
 
 	$permalink = get_permalink( $post_id );
 	$code      = sha1( $post_id . time() );
@@ -35,7 +34,7 @@ function buddyforms_contact_author_message_text( $emailBody, $post_id, $form_slu
 		'nonce'                     => buddyforms_create_nonce( 'buddyform_bf_offer_complete_request_keys', $post_id )
 	), $permalink );
 
-	$emailBody .= ' Set the offer to completed: <a href="' . $complete_offer_link . '">Set offer to complete</a>';
+	$emailBody .= ' Set the offer to completed: <a href="' . $complete_offer_link . '"> Click here!</a>';
 
 
 	return $emailBody;
