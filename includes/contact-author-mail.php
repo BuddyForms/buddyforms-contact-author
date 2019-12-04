@@ -116,7 +116,7 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
             <a id="buddyforms_contact_author_<?php echo $post_id ?>"
                data-post_id="<?php echo $post_id ?>"
                data-form_slug="<?php echo $form_slug ?>"
-               href="#" class="button">Contact the Author</a>
+               href="#" class="button"><?php __('Contact the Author', ''); ?></a>
         </div>
     </div>
 
@@ -155,6 +155,8 @@ function buddyforms_contact_author() {
 		return;
 	}
 
+	$form_slug_parent = get_post_meta( $post_id, '_bf_form_slug', true );
+
 
 	$from_email = $_POST['contact_author_email_from'];
 
@@ -179,30 +181,56 @@ function buddyforms_contact_author() {
 
 	$emailBody = $_POST['contact_author_email_message'];
 
-	$emailBody    = str_replace( '[user_login]', $usernameauth, $emailBody );
-	$emailBody    = str_replace( '[first_name]', $first_name, $emailBody );
-	$emailBody    = str_replace( '[last_name]', $last_name, $emailBody );
-	$emailBody    = str_replace( '[published_post_link_plain]', $postperma, $emailBody );
-	$postlinkhtml = "<a href='$postperma' target='_blank'>$postperma</a>";
-	$emailBody    = str_replace( '[published_post_link_html]', $postlinkhtml, $emailBody );
-	$emailBody    = str_replace( '[published_post_title]', $post_title, $emailBody );
-	$emailBody    = str_replace( '[site_name]', $blog_title, $emailBody );
-	$emailBody    = str_replace( '[site_url]', $siteurl, $emailBody );
-	$emailBody    = str_replace( '[site_url_html]', $siteurlhtml, $emailBody );
+//	$emailBody    = str_replace( '[user_login]', $usernameauth, $emailBody );
+//	$emailBody    = str_replace( '[first_name]', $first_name, $emailBody );
+//	$emailBody    = str_replace( '[last_name]', $last_name, $emailBody );
+//	$emailBody    = str_replace( '[published_post_link_plain]', $postperma, $emailBody );
+//	$postlinkhtml = "<a href='$postperma' target='_blank'>$postperma</a>";
+//	$emailBody    = str_replace( '[published_post_link_html]', $postlinkhtml, $emailBody );
+//	$emailBody    = str_replace( '[published_post_title]', $post_title, $emailBody );
+//	$emailBody    = str_replace( '[site_name]', $blog_title, $emailBody );
+//	$emailBody    = str_replace( '[site_url]', $siteurl, $emailBody );
+//	$emailBody    = str_replace( '[site_url_html]', $siteurlhtml, $emailBody );
 
-	$emailBody = apply_filters('buddyforms_contact_author_message_text', $emailBody, $post_id, $form_slug );
+	$emailBody = apply_filters('buddyforms_contact_author_message_text', $emailBody, $post->ID, $form_slug_parent );
 
-	$emailBody = stripslashes( htmlspecialchars_decode( $emailBody ) );
+	//$emailBody = stripslashes( htmlspecialchars_decode( $emailBody ) );
 
-	$mailheaders = "MIME-Version: 1.0\n";
-	$mailheaders .= "X-Priority: 1\n";
-	$mailheaders .= "Content-Type: text/html; charset=\"UTF-8\"\n";
-	$mailheaders .= "Content-Transfer-Encoding: 7bit\n\n";
-	$mailheaders .= "From: " . $from_email . "<" . $from_email . ">" . "\r\n";
 
-	$message = '<html><head></head><body>' . $emailBody . '</body></html>';
 
-	$result = wp_mail( $mail_to, $subject, $message, $mailheaders );
+
+	$short_codes_and_values = array(
+		'[user_login]'                => $usernameauth,
+		'[user_nicename]'             => $user_nicename,
+		'[user_email]'                => $user_email,
+		'[first_name]'                => $first_name,
+		'[last_name]'                 => $last_name,
+		'[published_post_link_plain]' => $postperma,
+		'[published_post_link_html]'  => $post_link_html,
+		'[published_post_title]'      => $post_title,
+		'[site_name]'                 => $blog_title,
+		'[site_url]'                  => $siteurl,
+		'[site_url_html]'             => $siteurlhtml,
+		'[form_elements_table]'       => buddyforms_mail_notification_form_elements_as_table( $form_slug_parent, $post ),
+	);
+
+	// If we have content let us check if there are any tags we need to replace with the correct values.
+	if ( ! empty( $emailBody ) ) {
+		$emailBody = stripslashes( $emailBody );
+		$emailBody = buddyforms_get_field_value_from_string( $emailBody, $post->ID, $form_slug_parent );
+
+		foreach ( $short_codes_and_values as $shortcode => $short_code_value ) {
+			$emailBody = buddyforms_replace_shortcode_for_value( $emailBody, $shortcode, $short_code_value );
+		}
+	} else {
+		if ( isset( $buddyforms[ $form_slug_parent ]['form_fields'] ) ) {
+			$emailBody = $short_codes_and_values['[form_elements_table]'];
+		}
+	}
+
+	$emailBody = nl2br( $emailBody );
+
+	$result = buddyforms_email( $mail_to, $subject, $from_email, $from_email, $emailBody, '', '' );
 
 	if ( ! $result ) {
 		$json['test'] .= __( 'There has been an error sending the message!', 'buddyforms' );
