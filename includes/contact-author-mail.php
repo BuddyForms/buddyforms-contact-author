@@ -116,7 +116,7 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
             <a id="buddyforms_contact_author_<?php echo $post_id ?>"
                data-post_id="<?php echo $post_id ?>"
                data-form_slug="<?php echo $form_slug ?>"
-               href="#" class="button"><?php __('Contact the Author', ''); ?></a>
+               href="#" class="button"><?php echo  __('Contact the Author', 'buddyforms'); ?></a>
         </div>
     </div>
 
