@@ -74,9 +74,26 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
             width: 100%;
         }
 
-        div#TB_ajaxContent {
+        /*div#TB_ajaxContent {*/
             width: 96% !important;
             height: 96% !important;
+        /*}*/
+
+
+
+        #TB_window {
+            top: 50%;
+            left: 50%;
+            /*transform: translate(-50%, -50%);*/
+            max-height: 100%;
+            max-width: 90%;
+            margin: 0 !important;
+        }
+        #TB_ajaxContent {
+            width: 100% !important;
+            height: auto !important;
+            max-width: 100%;
+            box-sizing: border-box;
         }
     </style>
 
