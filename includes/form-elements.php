@@ -15,13 +15,17 @@ function buddyforms_contact_author_admin_settings_sidebar_metabox_html() {
 
 	$buddyform = get_post_meta( get_the_ID(), '_buddyforms_options', true );
 
+	if ( empty( $buddyform ) ) {
+		return;
+	}
+
 	$form_setup = array();
 
 	$contact_author = false;
 	if ( isset( $buddyform['contact_author'] ) ) {
 		$contact_author = $buddyform['contact_author'];
 	}
-	$contact_author_message_subject = isset( $buddyform['contact_author_message_subject'] ) ?  $buddyform['contact_author_message_subject'] : '';
+	$contact_author_message_subject = isset( $buddyform['contact_author_message_subject'] ) ? $buddyform['contact_author_message_subject'] : '';
 	$contact_author_message_text    = isset( $buddyform['contact_author_message_text'] ) ? $buddyform['contact_author_message_text'] : '';
 
 	$form_setup[] = new Element_Checkbox( "<b>" . __( 'Enable Contact Author for this form entries', 'buddyforms' ) . "</b>", "buddyforms_options[contact_author]", array( "contact_author" => "Add contact author button to the form" ), array(
@@ -29,8 +33,8 @@ function buddyforms_contact_author_admin_settings_sidebar_metabox_html() {
 		'shortDesc' => __( '', 'buddyforms' )
 	) );
 
-	$contact_author_logged_in_only    = isset( $buddyform['contact_author_logged_in_only'] ) ? $buddyform['contact_author_logged_in_only'] : '';
-	$form_setup[] = new Element_Checkbox( "<b>" . __( 'Logged in user only', 'buddyforms' ) . "</b>", "buddyforms_options[contact_author_logged_in_only]", array( "logged_in_only" => "Only logged in users can contact authors" ), array(
+	$contact_author_logged_in_only = isset( $buddyform['contact_author_logged_in_only'] ) ? $buddyform['contact_author_logged_in_only'] : '';
+	$form_setup[]                  = new Element_Checkbox( "<b>" . __( 'Logged in user only', 'buddyforms' ) . "</b>", "buddyforms_options[contact_author_logged_in_only]", array( "logged_in_only" => "Only logged in users can contact authors" ), array(
 		'value'     => $contact_author_logged_in_only,
 		'shortDesc' => __( '', 'buddyforms' )
 	) );

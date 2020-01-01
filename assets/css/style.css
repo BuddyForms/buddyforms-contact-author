@@ -1,0 +1,26 @@
+#buddyforms_contact_author_wrap input[type="text"] {
+	width: 100%;
+}
+
+/*div#TB_ajaxContent {*/
+/*	width: 96% !important;*/
+/*	height: 96% !important;*/
+/*}*/
+
+
+#TB_window {
+	left: 50% !important;
+	transform: translate(-50%) !important;
+	max-height: 100%;
+	width: 90% !important;
+	min-height: 400px;
+	min-width: 300px;
+	margin: 0 !important;
+}
+
+#TB_ajaxContent {
+	width: 100% !important;
+	height: auto !important;
+	max-width: 100%;
+	box-sizing: border-box;
+}

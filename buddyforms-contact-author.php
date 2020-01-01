@@ -4,12 +4,12 @@
  * Plugin Name: BuddyForms Contact the Author
  * Plugin URI: https://themekraft.com/products/contact-the-author/
  * Description: Add a button to contact the author to your post listings and post single pages
- * Version: 0.1
+ * Version: 1.0.0
  * Author: ThemeKraft
  * Author URI: https://themekraft.com/
  * License: GPLv2 or later
  * Network: false
- * Text Domain: buddyforms
+ * Text Domain: buddyforms-contact-author
  *
  *****************************************************************************
  *
@@ -29,15 +29,18 @@
  *
  ****************************************************************************
  */
-/*
- * 
- */
 
 class BuddyFormsContactAuthor {
+
+	public static $include_assets = array();
+	public static $version = '1.0.0';
+	public static $slug = 'buddyforms-contact-author';
 	/**
-	 * @var string
+	 * Instance of this class
+	 *
+	 * @var $instance BuddyFormsFrontendTable
 	 */
-	public $version = '1.0.0';
+	protected static $instance = null;
 
 	/**
 	 * Initiate the class
@@ -68,7 +71,9 @@ class BuddyFormsContactAuthor {
 		if ( ! defined( 'BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH' ) ) {
 			define( 'BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH', BUDDYFORMS_CONTACT_AUTHOR_INSTALL_PATH . 'includes/' );
 		}
-
+		if ( ! defined( 'BUDDYFORMS_CONTACT_AUTHOR_ASSETS' ) ) {
+			define( 'BUDDYFORMS_CONTACT_AUTHOR_ASSETS', BUDDYFORMS_CONTACT_AUTHOR_PLUGIN_URL . 'assets/' );
+		}
 	}
 
 	/**
@@ -90,10 +95,66 @@ class BuddyFormsContactAuthor {
 	 * @since 1.0
 	 */
 	public function load_plugin_textdomain() {
-		load_plugin_textdomain( 'buddyforms', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+		load_plugin_textdomain( 'buddyforms-contact-author', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
 
+	public static function error_log( $message ) {
+		if ( ! empty( $message ) ) {
+			error_log( self::getSlug() . ' -- ' . $message );
+		}
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function getNeedAssets() {
+		if ( empty( self::$include_assets ) ) {
+			return false;
+		}
+
+		return in_array(true, self::$include_assets, true);
+	}
+
+	/**
+	 * @param string $include_assets
+	 * @param string $form_slug
+	 */
+	public static function setNeedAssets( $include_assets, $form_slug ) {
+		self::$include_assets[ $form_slug ] = $include_assets;
+	}
+
+	/**
+	 * Get plugin version
+	 *
+	 * @return string
+	 */
+	static function getVersion() {
+		return self::$version;
+	}
+
+	/**
+	 * Get plugins slug
+	 *
+	 * @return string
+	 */
+	static function getSlug() {
+		return self::$slug;
+	}
+
+	/**
+	 * Return an instance of this class.
+	 *
+	 * @return object A single instance of this class.
+	 */
+	public static function get_instance() {
+		// If the single instance hasn't been set, set it now.
+		if ( null == self::$instance ) {
+			self::$instance = new self;
+		}
+
+		return self::$instance;
+	}
 }
 
-$GLOBALS['BuddyFormsContactAuthor'] = new BuddyFormsContactAuthor();
+$GLOBALS['BuddyFormsContactAuthor'] = BuddyFormsContactAuthor::get_instance();
 

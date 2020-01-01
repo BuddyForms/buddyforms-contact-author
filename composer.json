@@ -1,0 +1,31 @@
+{
+  "name": "themekraft/buddyforms-contact-author",
+  "description": "Add a button to contact the author to your post listings and post single pages",
+  "type": "wordpress-plugin",
+  "keywords": ["contact author", "buddyforms"],
+  "homepage": "https://github.com/BuddyForms/buddyforms-contact-author/",
+  "license": "GPL-2.0+",
+  "authors": [
+    {
+      "name": "Sven Lehnert",
+      "email": "svenl@themekraft.com"
+    },
+    {
+      "name": "Guillermo Figueroa Mesa",
+      "email": "gfirem@gmail.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=5.2"
+  },
+  "require-dev": {
+    "bruli/php-git-hooks": "^5.1"
+  },
+  "scripts": {
+    "package": "sh .tk/package.sh loader",
+    "wp-release": "sh .tk/wp_release.sh",
+    "beta-release": "sh .tk/full-deploy.sh buddyforms-contact-author 5264 false beta",
+    "full-release": "sh .tk/full-deploy.sh buddyforms-contact-author 5264 false released"
+  }
+}
