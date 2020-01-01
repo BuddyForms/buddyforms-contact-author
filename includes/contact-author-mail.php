@@ -8,9 +8,6 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
 
     <script>
 
-
-        jQuery(document).ready(function () {
-
             var ajaxurl = '<?php echo admin_url( 'admin-ajax.php' ); ?>';
 
             function bfisEmail(email) {
@@ -18,7 +15,7 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
                 return regex.test(email);
             }
 
-            jQuery(document).on("click", '#buddyforms_contact_author_<?php echo $post_id ?>', function (evt) {
+            jQuery('#buddyforms_contact_author_<?php echo $post_id ?>').on("click", function (evt) {
 
 
                 var contact_author_email_subject = jQuery('#contact_author_email_subject_<?php echo $post_id ?>').val();
@@ -67,7 +64,6 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
                 });
 
             });
-        });
     </script>
     <style>
         #buddyforms_contact_author_wrap input[type="text"] {
