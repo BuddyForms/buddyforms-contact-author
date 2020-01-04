@@ -93,6 +93,7 @@ function buddyforms_contact_author() {
 		$siteurl     = get_bloginfo( 'wpurl' );
 		$siteurlhtml = "<a href='$siteurl' target='_blank' >$siteurl</a>";
 
+		$post_link_html = ! empty( $postperma ) ? sprintf( '<a href="%s" target="_blank">%s</a>', $postperma, $postperma ) : '';
 
 		$mail_to = $user_info->user_email;
 		$subject = sanitize_text_field( $_POST['contact_author_email_subject'] );
@@ -101,25 +102,11 @@ function buddyforms_contact_author() {
 
 		global $buddyforms;
 
-//	$emailBody    = str_replace( '[user_login]', $usernameauth, $emailBody );
-//	$emailBody    = str_replace( '[first_name]', $first_name, $emailBody );
-//	$emailBody    = str_replace( '[last_name]', $last_name, $emailBody );
-//	$emailBody    = str_replace( '[published_post_link_plain]', $postperma, $emailBody );
-//	$postlinkhtml = "<a href='$postperma' target='_blank'>$postperma</a>";
-//	$emailBody    = str_replace( '[published_post_link_html]', $postlinkhtml, $emailBody );
-//	$emailBody    = str_replace( '[published_post_title]', $post_title, $emailBody );
-//	$emailBody    = str_replace( '[site_name]', $blog_title, $emailBody );
-//	$emailBody    = str_replace( '[site_url]', $siteurl, $emailBody );
-//	$emailBody    = str_replace( '[site_url_html]', $siteurlhtml, $emailBody );
-
 		$emailBody = apply_filters( 'buddyforms_contact_author_message_text', $emailBody, $post->ID, $form_slug_parent );
-
-		//$emailBody = stripslashes( htmlspecialchars_decode( $emailBody ) );
 
 		$short_codes_and_values = array(
 			'[user_login]'                => $usernameauth,
 			'[user_nicename]'             => $user_nicename,
-			'[user_email]'                => $user_email,
 			'[first_name]'                => $first_name,
 			'[last_name]'                 => $last_name,
 			'[published_post_link_plain]' => $postperma,
@@ -147,14 +134,21 @@ function buddyforms_contact_author() {
 
 		$emailBody = nl2br( $emailBody );
 
+		if ( ! empty( $subject ) ) {
+			$subject = stripslashes( $subject );
+			$subject = buddyforms_get_field_value_from_string( $subject, $post->ID, $form_slug_parent );
+			foreach ( $short_codes_and_values as $shortcode => $short_code_value ) {
+				$subject = buddyforms_replace_shortcode_for_value( $subject, $shortcode, $short_code_value );
+			}
+		}
+
 		$result = buddyforms_email( $mail_to, $subject, $from_email, $from_email, $emailBody, '', '' );
 
 		if ( ! $result ) {
-			$json['test'] .= __( 'There has been an error sending the message!', 'buddyforms-contact-author' );
+			wp_send_json( __( 'There has been an error sending the message!', 'buddyforms-contact-author' ) );
 		}
 
-		//todo @sven what is the expected behavior here when all went ok
-		wp_send_json( $json );
+		wp_send_json( '' );
 	} catch ( Exception $ex ) {
 		BuddyFormsContactAuthor::error_log( $ex->getMessage() );
 	}
@@ -189,20 +183,16 @@ function buddyforms_contact_author_table_edit_column( $action_html, $post_id, $f
 }
 
 add_filter( 'buddyforms_contact_author_message_text', 'buddyforms_contact_author_message_text', 1, 3 );
-
 function buddyforms_contact_author_message_text( $emailBody, $post_id, $form_slug ) {
-
-	$permalink = get_permalink( $post_id );
-	$code      = sha1( $post_id . time() );
+	$home_page = home_url();
+	$lading_page = apply_filters('buddyforms_contact_author_landing_url', $home_page, $post_id, $form_slug);
 
 	$complete_offer_link = add_query_arg( array(
 		'bf_offer_complete_request' => $post_id,
-		'key'                       => $code,
-		'nonce'                     => buddyforms_create_nonce( 'buddyform_bf_offer_complete_request_keys', $post_id )
-	), $permalink );
+		'key'                       => wp_create_nonce( 'buddyforms_bf_offer_complete_request_keys' . __DIR__ )
+	), $lading_page );
 
 	$emailBody .= __( ' Set the offer to completed: ', 'buddyforms-contact-author' ) . '<a href="' . $complete_offer_link . '"> ' . __( 'Click here!', 'buddyforms-contact-author' ) . '</a>';
-
 
 	return $emailBody;
 }
@@ -216,6 +206,43 @@ function buddyforms_blocks_the_loop_post_status( $post_status, $form_slug ) {
 	return $post_status;
 }
 
+add_action( 'init', 'buddyforms_contact_author_post_request' );
+
+function buddyforms_contact_author_post_request() {
+	try {
+		if ( ! is_array( $_GET ) ) {
+			return;
+		}
+		if ( ! isset( $_GET['key'] ) || ! isset( $_GET['bf_offer_complete_request'] ) ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( $_GET['key'], 'buddyforms_bf_offer_complete_request_keys' . __DIR__ ) ) {
+			return;
+		}
+
+		$post_id = intval( $_GET['bf_offer_complete_request'] );
+
+		wp_delete_post( $post_id, true );
+
+		add_action( 'wp_head', 'buddyforms_contact_author_post_request_success' );
+	} catch ( Exception $ex ) {
+		BuddyFormsContactAuthor::error_log( $ex->getMessage() );
+	}
+
+	return;
+}
+
+function buddyforms_contact_author_post_request_success() {
+	$complete_string = apply_filters( 'buddyforms_contact_author_complete_string', __( 'Offer is set to completed', 'buddyforms-contact-author' ) );
+	?>
+	<script>
+		jQuery(document).ready(function() {
+			alert('<?php esc_attr( $complete_string ) ?>');
+			document.location.href = '/';
+		});
+	</script>
+	<?php
+}
 
 /**
  * Add 'completed' post status.

@@ -3,15 +3,12 @@
 function buddyforms_contact_author_post( $post_id, $form_slug ) {
 	global $buddyforms;
 	?>
-
 	<?php echo '<a id="buddyforms-contact-author-from-post-id-' . $post_id . '" href="#TB_inline?width=800&height=600&inlineId=buddyforms_contact_author_modal_' . $post_id . '" title="' . __( 'Contact the Author', 'buddyforms-contact-author' ) . '" class="thickbox buddyforms-contact-author-popup"><span aria-label="' . __( 'Contact the Author', 'buddyforms-contact-author' ) . '" title="' . __( 'Contact the Author', 'buddyforms-contact-author' ) . '" class="dashicons dashicons-email"> </span> ' . __( 'Contact the Author', 'buddyforms-contact-author' ) . '</a>'; ?>
 
 	<div id="buddyforms_contact_author_modal_<?php echo $post_id ?>" style="display:none;">
 		<div id="buddyforms_contact_author_wrap">
 			<br><br>
-
 			<?php
-
 			// Create the form object
 			$message_form_slug = "buddyforms_contact_author_post_" . $post_id;
 
@@ -30,12 +27,12 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
 			$contact_author_request_message = isset( $buddyforms[ $form_slug ]['contact_author_message_text'] ) ? $buddyforms[ $form_slug ]['contact_author_message_text'] : '';
 			$contact_author_form->addElement( new Element_Textarea( 'Add a Message', 'contact_author_email_message_' . $post_id, array(
 				'value' => $contact_author_request_message,
+				'rows' => '15',
 				'class' => ''
 			) ) );
 
 			$contact_author_form->render();
 			?>
-
 			<br>
 			<a id="buddyforms_contact_author_<?php echo $post_id ?>"
 			   data-post_id="<?php echo $post_id ?>"
@@ -43,44 +40,5 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
 			   href="#" class="btn-primary btn buddyforms-contact-author-action"><?php echo __( 'Contact the Author', 'buddyforms' ); ?></a>
 		</div>
 	</div>
-
-	<?php
-
-}
-
-add_action( 'init', 'buddyforms_contact_author_post_request' );
-
-function buddyforms_contact_author_post_request() {
-
-	if ( isset( $_GET['bf_offer_complete_request'] ) ) {
-
-		$key     = $_GET['key'];
-		$post_id = $_GET['bf_offer_complete_request'];
-		$nonce   = $_GET['nonce'];
-
-
-		if ( ! wp_verify_nonce( $nonce, 'buddyform_bf_offer_complete_request_keys' ) ) {
-			//	return false;
-		}
-
-		wp_update_post( array(
-			'ID'          => $post_id,
-			'post_status' => 'completed'
-		) );
-
-
-		add_action( 'wp_head', 'buddyforms_contact_author_post_request_success' );
-	}
-}
-
-function buddyforms_contact_author_post_request_success() {
-
-	?>
-	<script>
-		jQuery(document).ready(function() {
-			alert('Offer is set to completed');
-			document.location.href = '/';
-		});
-	</script>
 	<?php
 }
