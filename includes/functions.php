@@ -115,7 +115,6 @@ function buddyforms_contact_author_process_shortcode( $string, $post, $form_slug
 		foreach ( $short_codes_and_values as $shortcode => $short_code_value ) {
 			$string = buddyforms_replace_shortcode_for_value( $string, $shortcode, $short_code_value );
 		}
-//		$string = nl2br( $string );
 	}
 
 	return $string;
@@ -185,6 +184,7 @@ function buddyforms_contact_author() {
 
 		$subject = buddyforms_contact_author_process_shortcode( $subject, $post, $form_slug_parent );
 
+		$emailBody = nl2br( $emailBody );
 		$result = buddyforms_email( $mail_to, $subject, $from_email, $from_email, $emailBody, '', '' );
 
 		if ( ! $result ) {
