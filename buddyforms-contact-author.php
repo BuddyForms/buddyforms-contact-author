@@ -49,7 +49,7 @@ class BuddyFormsContactAuthor {
 	 * @since 0.1
 	 */
 	public function __construct() {
-		add_action( 'init', array( $this, 'includes' ), 4, 1 );
+		add_action( 'init', array( $this, 'includes' ) );
 		add_action( 'plugins_loaded', array( $this, 'load_plugin_textdomain' ) );
 		$this->load_constants();
 	}
@@ -76,6 +76,17 @@ class BuddyFormsContactAuthor {
 		}
 	}
 
+	public static function load_plugins_dependency() {
+		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+	}
+
+	public static function is_buddy_form_active() {
+		self::load_plugins_dependency();
+
+		return is_plugin_active( 'buddyforms-premium/BuddyForms.php' );
+	}
+
+
 	/**
 	 * Include files needed by BuddyForms
 	 *
@@ -83,9 +94,17 @@ class BuddyFormsContactAuthor {
 	 * @since 1.0
 	 */
 	public function includes() {
-		require_once BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH . 'form-elements.php';
-		require_once BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH . 'functions.php';
-		require_once BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH . 'contact-author-mail.php';
+		if ( self::is_buddy_form_active() ) {
+			require_once BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH . 'form-elements.php';
+			require_once BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH . 'functions.php';
+			require_once BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH . 'contact-author-mail.php';
+		} else {
+			add_action( 'admin_notices', array( $this, 'need_buddyforms' ) );
+		}
+	}
+
+	public function need_buddyforms() {
+		?><div class="notice notice-error"><p>Need <strong>BuddyForms Professional</strong> activated. Minimum version <i>2.5.10</i> required.</p></div><?php
 	}
 
 	/**
@@ -112,7 +131,7 @@ class BuddyFormsContactAuthor {
 			return false;
 		}
 
-		return in_array(true, self::$include_assets, true);
+		return in_array( true, self::$include_assets, true );
 	}
 
 	/**

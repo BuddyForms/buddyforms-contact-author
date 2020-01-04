@@ -40,6 +40,72 @@ function buddyforms_contact_author_include_assets() {
 	}
 }
 
+function buddyforms_contact_author_available_shortcodes() {
+	return array(
+		'[user_login]',
+		'[user_nicename]',
+		'[first_name]',
+		'[last_name]',
+		'[published_post_link_plain]',
+		'[published_post_link_html]',
+		'[published_post_title]',
+		'[site_name]',
+		'[site_url]',
+		'[site_url_html]'
+	);
+}
+
+function buddyforms_contact_author_unauthorized_field_type() {
+	return array(
+		'email',
+		'user_email'
+	);
+}
+
+function buddyforms_contact_author_process_shortcode( $string, $post, $form_slug ) {
+	if ( ! empty( $string ) ) {
+		$post_title = $post->post_title;
+		$postperma  = get_permalink( $post->ID );
+
+		$user_info = get_userdata( $post->post_author );
+
+		$usernameauth  = $user_info->user_login;
+		$user_nicename = $user_info->user_nicename;
+		$first_name    = $user_info->user_firstname;
+		$last_name     = $user_info->user_lastname;
+
+		$post_link_html = ! empty( $postperma ) ? sprintf( '<a href="%s" target="_blank">%s</a>', $postperma, $postperma ) : '';
+
+		$blog_title  = get_bloginfo( 'name' );
+		$siteurl     = get_bloginfo( 'wpurl' );
+		$siteurlhtml = "<a href='$siteurl' target='_blank' >$siteurl</a>";
+
+		$short_codes_and_values = array(
+			'[user_login]'                => $usernameauth,
+			'[user_nicename]'             => $user_nicename,
+			'[first_name]'                => $first_name,
+			'[last_name]'                 => $last_name,
+			'[published_post_link_plain]' => $postperma,
+			'[published_post_link_html]'  => $post_link_html,
+			'[published_post_title]'      => $post_title,
+			'[site_name]'                 => $blog_title,
+			'[site_url]'                  => $siteurl,
+			'[site_url_html]'             => $siteurlhtml,
+		);
+
+		// If we have content let us check if there are any tags we need to replace with the correct values.
+		$string = stripslashes( $string );
+		$string = buddyforms_get_field_value_from_string( $string, $post->ID, $form_slug );
+
+		foreach ( $short_codes_and_values as $shortcode => $short_code_value ) {
+			$string = buddyforms_replace_shortcode_for_value( $string, $shortcode, $short_code_value );
+		}
+//		$string = nl2br( $string );
+	}
+
+	return $string;
+}
+
 add_action( 'wp_ajax_buddyforms_contact_author', 'buddyforms_contact_author' );
 add_action( 'wp_ajax_nopriv_buddyforms_contact_author', 'buddyforms_contact_author' );
 
@@ -59,93 +125,55 @@ function buddyforms_contact_author() {
 			echo __( 'There has been an error sending the message!', 'buddyforms-contact-author' );
 			die();
 		}
-		if ( ! isset( $_POST['contact_author_email_from'] ) ) {
+
+		$post_id = intval( $_POST['post_id'] );
+
+		if ( ! isset( $_POST[ 'contact_author_email_from' ] ) ) {
 			echo __( 'Please enter a valid email address', 'buddyforms-contact-author' );
 			die();
 		}
 
-		$post_id = intval( $_POST['post_id'] );
+		if ( ! isset( $_POST[ 'contact_author_email_subject' ] ) ) {
+			echo __( 'Please enter a valid Subject', 'buddyforms-contact-author' );
+			die();
+		}
+
+		if ( ! isset( $_POST[ 'contact_author_email_message' ] ) ) {
+			echo __( 'Please enter a valid Message', 'buddyforms-contact-author' );
+			die();
+		}
 
 		$form_slug = "buddyforms_contact_author_post_" . $post_id;
 		if ( Form::isValid( $form_slug ) ) {
 
 		} else {
-			echo __( 'Please enter a valid email address', 'buddyforms-contact-author' );
+			echo __( 'Please check the form', 'buddyforms-contact-author' );
 			die();
 		}
 
 		$form_slug_parent = get_post_meta( $post_id, '_bf_form_slug', true );
 
-		$from_email = sanitize_text_field( $_POST['contact_author_email_from'] );
+		$from_email = sanitize_text_field( $_POST[ 'contact_author_email_from' ] );
 
-		$post       = get_post( $post_id );
-		$post_title = $post->post_title;
-		$postperma  = get_permalink( $post->ID );
+		$post = get_post( $post_id );
 
 		$user_info = get_userdata( $post->post_author );
 
-		$usernameauth  = $user_info->user_login;
-		$user_nicename = $user_info->user_nicename;
-		$first_name    = $user_info->user_firstname;
-		$last_name     = $user_info->user_lastname;
-
-		$blog_title  = get_bloginfo( 'name' );
-		$siteurl     = get_bloginfo( 'wpurl' );
-		$siteurlhtml = "<a href='$siteurl' target='_blank' >$siteurl</a>";
-
-		$post_link_html = ! empty( $postperma ) ? sprintf( '<a href="%s" target="_blank">%s</a>', $postperma, $postperma ) : '';
-
 		$mail_to = $user_info->user_email;
-		$subject = sanitize_text_field( $_POST['contact_author_email_subject'] );
+		$subject = sanitize_text_field( $_POST[ 'contact_author_email_subject' ] );
 
-		$emailBody = sanitize_text_field( $_POST['contact_author_email_message'] );
-
-		global $buddyforms;
+		$emailBody = sanitize_text_field( $_POST[ 'contact_author_email_message' ] );
 
 		$emailBody = apply_filters( 'buddyforms_contact_author_message_text', $emailBody, $post->ID, $form_slug_parent );
 
-		$short_codes_and_values = array(
-			'[user_login]'                => $usernameauth,
-			'[user_nicename]'             => $user_nicename,
-			'[first_name]'                => $first_name,
-			'[last_name]'                 => $last_name,
-			'[published_post_link_plain]' => $postperma,
-			'[published_post_link_html]'  => $post_link_html,
-			'[published_post_title]'      => $post_title,
-			'[site_name]'                 => $blog_title,
-			'[site_url]'                  => $siteurl,
-			'[site_url_html]'             => $siteurlhtml,
-			'[form_elements_table]'       => buddyforms_mail_notification_form_elements_as_table( $form_slug_parent, $post ),
-		);
+		$emailBody = buddyforms_contact_author_process_shortcode( $emailBody, $post, $form_slug_parent );
 
-		// If we have content let us check if there are any tags we need to replace with the correct values.
-		if ( ! empty( $emailBody ) ) {
-			$emailBody = stripslashes( $emailBody );
-			$emailBody = buddyforms_get_field_value_from_string( $emailBody, $post->ID, $form_slug_parent );
-
-			foreach ( $short_codes_and_values as $shortcode => $short_code_value ) {
-				$emailBody = buddyforms_replace_shortcode_for_value( $emailBody, $shortcode, $short_code_value );
-			}
-		} else {
-			if ( isset( $buddyforms[ $form_slug_parent ]['form_fields'] ) ) {
-				$emailBody = $short_codes_and_values['[form_elements_table]'];
-			}
-		}
-
-		$emailBody = nl2br( $emailBody );
-
-		if ( ! empty( $subject ) ) {
-			$subject = stripslashes( $subject );
-			$subject = buddyforms_get_field_value_from_string( $subject, $post->ID, $form_slug_parent );
-			foreach ( $short_codes_and_values as $shortcode => $short_code_value ) {
-				$subject = buddyforms_replace_shortcode_for_value( $subject, $shortcode, $short_code_value );
-			}
-		}
+		$subject = buddyforms_contact_author_process_shortcode( $subject, $post, $form_slug_parent );
 
 		$result = buddyforms_email( $mail_to, $subject, $from_email, $from_email, $emailBody, '', '' );
 
 		if ( ! $result ) {
-			wp_send_json( __( 'There has been an error sending the message!', 'buddyforms-contact-author' ) );
+			wp_send_json( __( 'There has been an error sending the message!', 'buddyforms-contact-author' ), 400 );
 		}
 
 		wp_send_json( '' );
@@ -184,8 +212,8 @@ function buddyforms_contact_author_table_edit_column( $action_html, $post_id, $f
 
 add_filter( 'buddyforms_contact_author_message_text', 'buddyforms_contact_author_message_text', 1, 3 );
 function buddyforms_contact_author_message_text( $emailBody, $post_id, $form_slug ) {
-	$home_page = home_url();
-	$lading_page = apply_filters('buddyforms_contact_author_landing_url', $home_page, $post_id, $form_slug);
+	$home_page   = home_url();
+	$lading_page = apply_filters( 'buddyforms_contact_author_landing_url', $home_page, $post_id, $form_slug );
 
 	$complete_offer_link = add_query_arg( array(
 		'bf_offer_complete_request' => $post_id,

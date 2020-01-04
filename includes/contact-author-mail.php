@@ -2,6 +2,7 @@
 
 function buddyforms_contact_author_post( $post_id, $form_slug ) {
 	global $buddyforms;
+	$post = get_post( $post_id );
 	?>
 	<?php echo '<a id="buddyforms-contact-author-from-post-id-' . $post_id . '" href="#TB_inline?width=800&height=600&inlineId=buddyforms_contact_author_modal_' . $post_id . '" title="' . __( 'Contact the Author', 'buddyforms-contact-author' ) . '" class="thickbox buddyforms-contact-author-popup"><span aria-label="' . __( 'Contact the Author', 'buddyforms-contact-author' ) . '" title="' . __( 'Contact the Author', 'buddyforms-contact-author' ) . '" class="dashicons dashicons-email"> </span> ' . __( 'Contact the Author', 'buddyforms-contact-author' ) . '</a>'; ?>
 
@@ -22,12 +23,18 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
 			$contact_author_form->addElement( new Element_Email( 'Your eMail Address', 'contact_author_email_from_' . $post_id, array( 'required' => 'required' ) ) );
 
 			$contact_author_message_subject = isset( $buddyforms[ $form_slug ]['contact_author_message_subject'] ) ? $buddyforms[ $form_slug ]['contact_author_message_subject'] : '';
+			if ( ! empty( $contact_author_message_subject ) ) {
+				$contact_author_message_subject = buddyforms_contact_author_process_shortcode( $contact_author_message_subject, $post, $form_slug );
+			}
 			$contact_author_form->addElement( new Element_Textbox( 'Subject', 'contact_author_email_subject_' . $post_id, array( 'value' => $contact_author_message_subject ) ) );
 
 			$contact_author_request_message = isset( $buddyforms[ $form_slug ]['contact_author_message_text'] ) ? $buddyforms[ $form_slug ]['contact_author_message_text'] : '';
+			if ( ! empty( $contact_author_request_message ) ) {
+				$contact_author_request_message = buddyforms_contact_author_process_shortcode( $contact_author_request_message, $post, $form_slug );
+			}
 			$contact_author_form->addElement( new Element_Textarea( 'Add a Message', 'contact_author_email_message_' . $post_id, array(
 				'value' => $contact_author_request_message,
-				'rows' => '15',
+				'rows'  => '15',
 				'class' => ''
 			) ) );
 

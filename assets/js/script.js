@@ -33,6 +33,7 @@ var buddyformsContactAuthorInstance = {
 
 		var form_slug = actionButton.attr('data-form_slug');
 		actionButton.attr('disabled', true);
+		var actionButtonOriginalText = actionButton.text();
 		actionButton.text('Loading...');
 
 		jQuery.ajax({
@@ -56,6 +57,8 @@ var buddyformsContactAuthorInstance = {
 				}, 2000);
 			},
 			error: function(request, status, error) {
+				actionButton.text(actionButtonOriginalText);
+				actionButton.removeAttr('disabled');
 				alert(request.responseText);
 			},
 		});
