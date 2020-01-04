@@ -176,7 +176,7 @@ function buddyforms_contact_author() {
 		$mail_to = $user_info->user_email;
 		$subject = sanitize_text_field( $_POST['contact_author_email_subject'] );
 
-		$emailBody = sanitize_text_field( $_POST['contact_author_email_message'] );
+		$emailBody = sanitize_textarea_field( $_POST['contact_author_email_message'] );
 
 		$emailBody = apply_filters( 'buddyforms_contact_author_message_text', $emailBody, $post->ID, $form_slug_parent );
 
