@@ -3,11 +3,12 @@ var buddyformsContactAuthorInstance = {
 		if (!email || (email && email.length === 0)) {
 			return false;
 		}
-		var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+		var regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 		return regex.test(email);
 	},
 	contactAuthor: function() {
-		var post_id = jQuery(this).attr('data-post_id');
+		var actionButton = jQuery(this);
+		var post_id = actionButton.attr('data-post_id');
 		if (!post_id) {
 			console.log('something went wrong, please contact the admin');
 			return false;
@@ -30,7 +31,9 @@ var buddyformsContactAuthorInstance = {
 			return false;
 		}
 
-		var form_slug = jQuery(this).attr('data-form_slug');
+		var form_slug = actionButton.attr('data-form_slug');
+		actionButton.attr('disabled', true);
+		actionButton.text('Loading...');
 
 		jQuery.ajax({
 			type: 'POST',
@@ -40,15 +43,17 @@ var buddyformsContactAuthorInstance = {
 				'action': 'buddyforms_contact_author',
 				'post_id': post_id,
 				'form_slug': form_slug,
-				'nonce': buddyformsContactAuthor.nonce, //todo @sven I add this for security purpose
+				'nonce': buddyformsContactAuthor.nonce,
 				'contact_author_email_subject': contact_author_email_subject,
 				'contact_author_email_message': contact_author_email_message,
 				'contact_author_email_from': contact_author_email_from,
 			},
 			success: function(data) {
 				console.log(data);
-				location.reload();
-				// document.getElementById(form_slug).reset();
+				actionButton.text('Complete');
+				setTimeout(function() {
+					location.reload();
+				}, 2000);
 			},
 			error: function(request, status, error) {
 				alert(request.responseText);
