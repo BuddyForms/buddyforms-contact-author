@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 function buddyforms_contact_author_post( $post_id, $form_slug ) {
 	global $buddyforms;
 	$post = get_post( $post_id );

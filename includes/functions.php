@@ -1,5 +1,8 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 add_action( 'buddyforms_front_js_css_after_enqueue', 'buddyforms_contact_author_needs_assets', 10, 2 );
 
 function buddyforms_contact_author_needs_assets( $content, $form_slug ) {
@@ -63,16 +66,28 @@ function buddyforms_contact_author_unauthorized_field_type() {
 }
 
 function buddyforms_contact_author_process_shortcode( $string, $post, $form_slug ) {
-	if ( ! empty( $string ) ) {
+	if ( ! empty( $string ) && ! empty( $post ) && ! empty( $form_slug ) ) {
 		$post_title = $post->post_title;
 		$postperma  = get_permalink( $post->ID );
 
 		$user_info = get_userdata( $post->post_author );
 
-		$usernameauth  = $user_info->user_login;
-		$user_nicename = $user_info->user_nicename;
-		$first_name    = $user_info->user_firstname;
-		$last_name     = $user_info->user_lastname;
+		$usernameauth = '';
+		if ( ! empty( $user_info->user_login ) ) {
+			$usernameauth = $user_info->user_login;
+		}
+		$user_nicename = '';
+		if ( ! empty( $user_info->user_nicename ) ) {
+			$user_nicename = $user_info->user_nicename;
+		}
+		$first_name = '';
+		if ( ! empty( $user_info->user_firstname ) ) {
+			$first_name = $user_info->user_firstname;
+		}
+		$last_name = '';
+		if ( ! empty( $user_info->user_lastname ) ) {
+			$last_name = $user_info->user_lastname;
+		}
 
 		$post_link_html = ! empty( $postperma ) ? sprintf( '<a href="%s" target="_blank">%s</a>', $postperma, $postperma ) : '';
 
@@ -128,17 +143,17 @@ function buddyforms_contact_author() {
 
 		$post_id = intval( $_POST['post_id'] );
 
-		if ( ! isset( $_POST[ 'contact_author_email_from' ] ) ) {
+		if ( ! isset( $_POST['contact_author_email_from'] ) ) {
 			echo __( 'Please enter a valid email address', 'buddyforms-contact-author' );
 			die();
 		}
 
-		if ( ! isset( $_POST[ 'contact_author_email_subject' ] ) ) {
+		if ( ! isset( $_POST['contact_author_email_subject'] ) ) {
 			echo __( 'Please enter a valid Subject', 'buddyforms-contact-author' );
 			die();
 		}
 
-		if ( ! isset( $_POST[ 'contact_author_email_message' ] ) ) {
+		if ( ! isset( $_POST['contact_author_email_message'] ) ) {
 			echo __( 'Please enter a valid Message', 'buddyforms-contact-author' );
 			die();
 		}
@@ -153,16 +168,16 @@ function buddyforms_contact_author() {
 
 		$form_slug_parent = get_post_meta( $post_id, '_bf_form_slug', true );
 
-		$from_email = sanitize_text_field( $_POST[ 'contact_author_email_from' ] );
+		$from_email = sanitize_text_field( $_POST['contact_author_email_from'] );
 
 		$post = get_post( $post_id );
 
 		$user_info = get_userdata( $post->post_author );
 
 		$mail_to = $user_info->user_email;
-		$subject = sanitize_text_field( $_POST[ 'contact_author_email_subject' ] );
+		$subject = sanitize_text_field( $_POST['contact_author_email_subject'] );
 
-		$emailBody = sanitize_text_field( $_POST[ 'contact_author_email_message' ] );
+		$emailBody = sanitize_text_field( $_POST['contact_author_email_message'] );
 
 		$emailBody = apply_filters( 'buddyforms_contact_author_message_text', $emailBody, $post->ID, $form_slug_parent );
 
@@ -215,9 +230,19 @@ function buddyforms_contact_author_message_text( $emailBody, $post_id, $form_slu
 	$home_page   = home_url();
 	$lading_page = apply_filters( 'buddyforms_contact_author_landing_url', $home_page, $post_id, $form_slug );
 
+	$author = get_post_field( 'post_author', $post_id );
+	if ( empty( $author ) ) {
+		return $emailBody;
+	}
+
+	$data        = array(
+		'id'  => $post_id,
+		'key' => buddyforms_create_nonce( 'buddyforms_bf_offer_complete_request_keys', $author, '' )
+	);
+	$data_string = json_encode( $data );
+
 	$complete_offer_link = add_query_arg( array(
-		'bf_offer_complete_request' => $post_id,
-		'key'                       => wp_create_nonce( 'buddyforms_bf_offer_complete_request_keys' . __DIR__ )
+		'bf_offer_complete_request' => base64_encode( $data_string . '|' . wp_nonce_tick() ),
 	), $lading_page );
 
 	$emailBody .= __( ' Set the offer to completed: ', 'buddyforms-contact-author' ) . '<a href="' . $complete_offer_link . '"> ' . __( 'Click here!', 'buddyforms-contact-author' ) . '</a>';
@@ -234,21 +259,45 @@ function buddyforms_blocks_the_loop_post_status( $post_status, $form_slug ) {
 	return $post_status;
 }
 
-add_action( 'init', 'buddyforms_contact_author_post_request' );
-
+add_action( 'parse_request', 'buddyforms_contact_author_post_request' );
 function buddyforms_contact_author_post_request() {
 	try {
 		if ( ! is_array( $_GET ) ) {
 			return;
 		}
-		if ( ! isset( $_GET['key'] ) || ! isset( $_GET['bf_offer_complete_request'] ) ) {
-			return;
-		}
-		if ( ! wp_verify_nonce( $_GET['key'], 'buddyforms_bf_offer_complete_request_keys' . __DIR__ ) ) {
+		if ( ! isset( $_GET['bf_offer_complete_request'] ) ) {
 			return;
 		}
 
-		$post_id = intval( $_GET['bf_offer_complete_request'] );
+		$data = base64_decode( $_GET['bf_offer_complete_request'] );
+
+		$tick = wp_nonce_tick();
+
+		$data = str_replace('|'.$tick, '', $data);
+
+		if ( empty( $data ) ) {
+			return;
+		}
+
+		$data = json_decode( $data, true );
+
+		if ( ! isset( $data['key'] ) || ! isset( $data['id'] ) ) {
+			return;
+		}
+
+		$post_id = intval( $data['id'] );
+		$author  = get_post_field( 'post_author', $post_id );
+
+		if ( empty( $author ) || is_wp_error( $author ) ) {
+			return;
+		}
+
+		$expected = buddyforms_create_nonce( 'buddyforms_bf_offer_complete_request_keys', $author, '' );
+		$nonce    = sanitize_text_field( $data['key'] );
+
+		if ( ! hash_equals( $expected, $nonce ) ) {
+			return;
+		}
 
 		wp_delete_post( $post_id, true );
 
@@ -261,12 +310,14 @@ function buddyforms_contact_author_post_request() {
 }
 
 function buddyforms_contact_author_post_request_success() {
+	$home_page   = home_url();
+	$lading_page = apply_filters( 'buddyforms_contact_author_complete_redirection', $home_page );
 	$complete_string = apply_filters( 'buddyforms_contact_author_complete_string', __( 'Offer is set to completed', 'buddyforms-contact-author' ) );
 	?>
 	<script>
 		jQuery(document).ready(function() {
-			alert('<?php esc_attr( $complete_string ) ?>');
-			document.location.href = '/';
+			alert('<?php echo esc_attr( $complete_string ) ?>');
+			document.location.href = '<?php echo $lading_page; ?>';
 		});
 	</script>
 	<?php

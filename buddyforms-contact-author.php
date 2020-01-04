@@ -30,6 +30,10 @@
  ****************************************************************************
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class BuddyFormsContactAuthor {
 
 	public static $include_assets = array();
