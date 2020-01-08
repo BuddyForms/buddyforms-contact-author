@@ -18,23 +18,29 @@ var buddyformsContactAuthorInstance = {
 		var contact_author_email_from = jQuery('#contact_author_email_from_' + post_id).val();
 		var contact_author_email_message = jQuery('#contact_author_email_message_' + post_id).val();
 
+		var error_invalid_email = buddyformsContactAuthor.error_invalid_email;
+		var error_invalid_subject = buddyformsContactAuthor.error_invalid_subject;
+		var error_invalid_message = buddyformsContactAuthor.error_invalid_message;
+		var popup_loading = buddyformsContactAuthor.popup_loading;
+		var popup_complete = buddyformsContactAuthor.popup_complete;
+
 		if (!buddyformsContactAuthorInstance.bfIsEmail(contact_author_email_from)) {
-			alert('Please enter a valid email address');
+			alert(error_invalid_email);
 			return false;
 		}
 		if (contact_author_email_subject && contact_author_email_subject.length === 0) {
-			alert('Subject is a required field');
+			alert(error_invalid_subject);
 			return false;
 		}
 		if (contact_author_email_message && contact_author_email_message.length === 0) {
-			alert('Message is a required field');
+			alert(error_invalid_message);
 			return false;
 		}
 
 		var form_slug = actionButton.attr('data-form_slug');
 		actionButton.attr('disabled', true);
 		var actionButtonOriginalText = actionButton.text();
-		actionButton.text('Loading...');
+		actionButton.text(popup_loading);
 
 		jQuery.ajax({
 			type: 'POST',
@@ -51,7 +57,7 @@ var buddyformsContactAuthorInstance = {
 			},
 			success: function(data) {
 				console.log(data);
-				actionButton.text('Complete');
+				actionButton.text(popup_complete);
 				setTimeout(function() {
 					location.reload();
 				}, 2000);

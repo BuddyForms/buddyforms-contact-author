@@ -36,6 +36,13 @@ function buddyforms_contact_author_include_assets() {
 			'nonce'    => wp_create_nonce( __DIR__ . 'buddyforms-contact-author' ),
 			'language' => apply_filters( 'buddyforms_contact_author_language', array(
 				'contact_author' => __( 'Contact the Author', 'buddyforms-contact-author' ),
+				'error' => apply_filters( 'buddyforms_contact_author_invalid', __( 'There has been an error sending the message!', 'buddyforms-contact-author' ) ),
+				'error_invalid_email' => apply_filters( 'buddyforms_contact_author_invalid_email', __( 'Please enter a valid email address', 'buddyforms-contact-author' ) ),
+				'error_invalid_subject' => apply_filters( 'buddyforms_contact_author_invalid_subject', __( 'Please enter a valid Subject', 'buddyforms-contact-author' ) ),
+				'error_invalid_message' => apply_filters( 'buddyforms_contact_author_invalid_message', __( 'Please enter a valid Message', 'buddyforms-contact-author' ) ),
+				'error_invalid_form' => apply_filters( 'buddyforms_contact_author_invalid_form', __( 'Please check the form', 'buddyforms-contact-author' ) ),
+				'popup_loading' => apply_filters( 'buddyforms_contact_author_modal_loading_string', __( 'Loading...', 'buddyforms-contact-author' ) ),
+				'popup_complete' => apply_filters( 'buddyforms_contact_author_modal_loading_string', __( 'Complete', 'buddyforms-contact-author' ) ),
 			) )
 		) );
 		wp_enqueue_style( 'buddyforms-contact-author-style', BUDDYFORMS_CONTACT_AUTHOR_ASSETS . 'css/style.css', array(), BuddyFormsContactAuthor::getVersion() );
@@ -138,7 +145,7 @@ function buddyforms_contact_author() {
 		$f_slug = buddyforms_sanitize_slug( $_POST['form_slug'] );
 
 
-		$string_error = apply_filters( 'buddyforms_contact_author_invalid_subject', __( 'There has been an error sending the message!', 'buddyforms-contact-author' ), $f_slug );
+		$string_error = apply_filters( 'buddyforms_contact_author_invalid', __( 'There has been an error sending the message!', 'buddyforms-contact-author' ) );
 
 		if ( ! isset( $_POST['post_id'] ) ) {
 			echo $string_error;
@@ -147,28 +154,28 @@ function buddyforms_contact_author() {
 
 		$post_id = intval( $_POST['post_id'] );
 
-		$string_error_invalid_email = apply_filters( 'buddyforms_contact_author_invalid_email', __( 'Please enter a valid email address', 'buddyforms-contact-author' ), $f_slug, $post_id );
+		$string_error_invalid_email = apply_filters( 'buddyforms_contact_author_invalid_email', __( 'Please enter a valid email address', 'buddyforms-contact-author' ) );
 
 		if ( ! isset( $_POST['contact_author_email_from'] ) ) {
 			echo $string_error_invalid_email;
 			die();
 		}
 
-		$string_error_invalid_subject = apply_filters( 'buddyforms_contact_author_invalid_subject', __( 'Please enter a valid Subject', 'buddyforms-contact-author' ), $f_slug, $post_id );
+		$string_error_invalid_subject = apply_filters( 'buddyforms_contact_author_invalid_subject', __( 'Please enter a valid Subject', 'buddyforms-contact-author' ) );
 
 		if ( ! isset( $_POST['contact_author_email_subject'] ) ) {
 			echo $string_error_invalid_subject;
 			die();
 		}
 
-		$string_error_invalid_message = apply_filters( 'buddyforms_contact_author_invalid_subject', __( 'Please enter a valid Message', 'buddyforms-contact-author' ), $f_slug, $post_id );
+		$string_error_invalid_message = apply_filters( 'buddyforms_contact_author_invalid_message', __( 'Please enter a valid Message', 'buddyforms-contact-author' ) );
 
 		if ( ! isset( $_POST['contact_author_email_message'] ) ) {
 			echo $string_error_invalid_message;
 			die();
 		}
 
-		$string_error_invalid_form = apply_filters( 'buddyforms_contact_author_invalid_subject', __( 'Please check the form', 'buddyforms-contact-author' ), $f_slug, $post_id );
+		$string_error_invalid_form = apply_filters( 'buddyforms_contact_author_invalid_form', __( 'Please check the form', 'buddyforms-contact-author' ) );
 
 		$form_slug = "buddyforms_contact_author_post_" . $post_id;
 		if ( Form::isValid( $form_slug ) ) {
