@@ -49,16 +49,16 @@ function buddyforms_contact_author_admin_settings_sidebar_metabox_html() {
 	) );
 
 	$all_shortcodes       = array();
-	$available_shortcodes = buddyforms_contact_author_available_shortcodes();
+	$element_name    = 'buddyforms_options[contact_author_message_text]';
+	$available_shortcodes = buddyforms_available_shortcodes( $buddyform['slug'], $element_name );
 	if ( ! empty( $buddyform['form_fields'] ) ) {
 		foreach ( $buddyform['form_fields'] as $form_field ) {
-			if ( ! in_array( $form_field['type'], buddyforms_contact_author_unauthorized_field_type() ) ) {
+			if ( ! in_array( $form_field['type'], buddyforms_unauthorized_shortcodes_field_type( $buddyform['slug'], $element_name ) ) ) {
 				$all_shortcodes[] = '[' . $form_field['name'] . ']';
 			}
 		}
 	}
 
-	$element_name    = 'buddyforms_options[contact_author_message_text]';
 	$all_shortcodes  = array_merge( $all_shortcodes, $available_shortcodes );
 	$shortcodes_html = buddyforms_get_shortcode_string( $all_shortcodes, $element_name );
 	$form_setup[]    = new Element_Textarea( "<b>" . __( 'Message Text', 'buddyforms' ) . "</b>", $element_name, array(

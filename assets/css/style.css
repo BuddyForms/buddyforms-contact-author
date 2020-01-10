@@ -10,12 +10,16 @@
 
 #TB_window {
 	left: 50% !important;
-	transform: translate(-50%) !important;
+	-webkit-transform: translateX(-50%) translateY(-50%) !important;
+	 -moz-transform: translateX(-50%) translateY(-50%) !important;
+	 transform: translateX(-50%) translateY(-50%) !important;
 	max-height: 100%;
 	width: 90% !important;
 	min-height: 400px;
 	min-width: 300px;
 	margin-left: unset !important;
+	margin-top: unset !important;
+	top: 50% !important;
 }
 
 #TB_ajaxContent {
@@ -23,4 +27,39 @@
 	height: auto !important;
 	max-width: 100%;
 	box-sizing: border-box;
+}
+
+/* Screen = 1281px to higher resolution desktops */
+@media (min-width: 1281px) {
+	#TB_window {
+		width: 60% !important;
+	}
+}
+
+/* Screen = B/w 768px to 1024px */
+@media (min-width: 768px) and (max-width: 1024px) {
+	#TB_window {
+		width: 80% !important;
+	}
+}
+
+/* Screen = B/w 1025px to 1280px */
+@media (min-width: 1025px) and (max-width: 1280px) {
+	#TB_window {
+		width: 80% !important;
+	}
+}
+
+/* Screen = B/w 481px to 767px */
+@media (min-width: 481px) and (max-width: 767px) {
+	#TB_window {
+		width: 90% !important;
+	}
+}
+
+/* Screen = B/w 320px to 479px */
+@media (min-width: 320px) and (max-width: 480px) {
+	#TB_window {
+		width: 90% !important;
+	}
 }

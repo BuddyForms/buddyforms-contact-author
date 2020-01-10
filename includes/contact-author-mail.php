@@ -52,9 +52,12 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
 			) ) );
 
 			$contact_author_form->render();
+
+			$btn_html              = sprintf( '<button id="buddyforms_contact_author_%s" data-post_id="%s" data-form_slug="%s" class="btn-primary btn buddyforms-contact-author-action">%s</button>', $post_id, $post_id, $form_slug, $popup_btn_action_string );
+			$contact_author_action = apply_filters( 'buddyforms_contact_author_action_button', $btn_html, $form_slug, $post_id,  $popup_btn_action_string);
 			?>
 			<br>
-			<button id="buddyforms_contact_author_<?php echo $post_id ?>" data-post_id="<?php echo $post_id ?>" data-form_slug="<?php echo $form_slug ?>" class="btn-primary btn buddyforms-contact-author-action"><?php echo $popup_btn_action_string; ?></button>
+			<?php echo $contact_author_action ?>
 		</div>
 	</div>
 	<?php

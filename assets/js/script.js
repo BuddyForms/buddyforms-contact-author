@@ -18,11 +18,11 @@ var buddyformsContactAuthorInstance = {
 		var contact_author_email_from = jQuery('#contact_author_email_from_' + post_id).val();
 		var contact_author_email_message = jQuery('#contact_author_email_message_' + post_id).val();
 
-		var error_invalid_email = buddyformsContactAuthor.error_invalid_email;
-		var error_invalid_subject = buddyformsContactAuthor.error_invalid_subject;
-		var error_invalid_message = buddyformsContactAuthor.error_invalid_message;
-		var popup_loading = buddyformsContactAuthor.popup_loading;
-		var popup_complete = buddyformsContactAuthor.popup_complete;
+		var error_invalid_email = buddyformsContactAuthor.language.error_invalid_email;
+		var error_invalid_subject = buddyformsContactAuthor.language.error_invalid_subject;
+		var error_invalid_message = buddyformsContactAuthor.language.error_invalid_message;
+		var popup_loading = buddyformsContactAuthor.language.popup_loading;
+		var popup_complete = buddyformsContactAuthor.language.popup_complete;
 
 		if (!buddyformsContactAuthorInstance.bfIsEmail(contact_author_email_from)) {
 			alert(error_invalid_email);
@@ -45,6 +45,7 @@ var buddyformsContactAuthorInstance = {
 		jQuery.ajax({
 			type: 'POST',
 			dataType: 'json',
+			// contentType: 'application/x-www-form-urlencoded; utf-8',
 			url: buddyformsContactAuthor.ajax,
 			data: {
 				'action': 'buddyforms_contact_author',
