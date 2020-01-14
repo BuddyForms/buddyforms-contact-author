@@ -52,16 +52,14 @@ function buddyforms_contact_author_include_assets() {
 
 add_filter( 'buddyforms_available_shortcodes', 'buddyforms_contact_author_available_shortcodes', 10, 3 );
 function buddyforms_contact_author_available_shortcodes( $shortcodes, $form_slug, $element_name ) {
-	if ( ! empty( $element_name ) && strpos( $element_name, 'contact_author_message_text' ) > 0 ) {
-		$shortcodes[] = '[complete_offer_link]';
-	}
+	$shortcodes[] = '[complete_offer_link]';
 
 	return $shortcodes;
 }
 
 add_filter( 'buddyforms_unauthorized_shortcodes_field_type', 'buddyforms_contact_author_unauthorized_field_type', 10, 3 );
 function buddyforms_contact_author_unauthorized_field_type( $shortcodes, $form_slug, $element_name ) {
-	if ( ! empty( $element_name ) && strpos( $element_name, 'contact_author_message_text') > 0 ) {
+	if ( ! empty( $element_name ) && strpos( $element_name, 'contact_author_message_text' ) > 0 ) {
 		$shortcodes[] = 'email';
 		$shortcodes[] = 'user_email';
 	}
