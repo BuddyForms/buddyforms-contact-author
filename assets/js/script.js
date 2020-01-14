@@ -4,7 +4,7 @@ var buddyformsContactAuthorInstance = {
 			return false;
 		}
 		var regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-		return regex.test(email);
+		return regex.test(email.trim());
 	},
 	contactAuthor: function() {
 		var actionButton = jQuery(this);
@@ -14,9 +14,14 @@ var buddyformsContactAuthorInstance = {
 			return false;
 		}
 
-		var contact_author_email_subject = jQuery('#contact_author_email_subject_' + post_id).val();
-		var contact_author_email_from = jQuery('#contact_author_email_from_' + post_id).val();
-		var contact_author_email_message = jQuery('#contact_author_email_message_' + post_id).val();
+		var currentPopup = jQuery('#TB_ajaxContent');
+		if (currentPopup && currentPopup.length === 0) {
+			console.log('something went wrong, tickbox is not present, please contact the admin');
+			return false;
+		}
+		var contact_author_email_subject = currentPopup.find('#contact_author_email_subject_' + post_id).val();
+		var contact_author_email_from = currentPopup.find('#contact_author_email_from_' + post_id).val();
+		var contact_author_email_message = currentPopup.find('#contact_author_email_message_' + post_id).val();
 
 		var error_invalid_email = buddyformsContactAuthor.language.error_invalid_email;
 		var error_invalid_subject = buddyformsContactAuthor.language.error_invalid_subject;
@@ -24,7 +29,8 @@ var buddyformsContactAuthorInstance = {
 		var popup_loading = buddyformsContactAuthor.language.popup_loading;
 		var popup_complete = buddyformsContactAuthor.language.popup_complete;
 
-		if (!buddyformsContactAuthorInstance.bfIsEmail(contact_author_email_from)) {
+		var isValidEmail = buddyformsContactAuthorInstance.bfIsEmail(contact_author_email_from);
+		if (!isValidEmail) {
 			alert(error_invalid_email);
 			return false;
 		}
