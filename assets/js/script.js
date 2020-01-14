@@ -29,6 +29,9 @@ var buddyformsContactAuthorInstance = {
 		var popup_loading = buddyformsContactAuthor.language.popup_loading;
 		var popup_complete = buddyformsContactAuthor.language.popup_complete;
 
+		var redirectTimeOut = buddyformsContactAuthor.timeout;
+		var redirectLocation = buddyformsContactAuthor.redirect;
+
 		var isValidEmail = buddyformsContactAuthorInstance.bfIsEmail(contact_author_email_from);
 		if (!isValidEmail) {
 			alert(error_invalid_email);
@@ -66,8 +69,12 @@ var buddyformsContactAuthorInstance = {
 				console.log(data);
 				actionButton.text(popup_complete);
 				setTimeout(function() {
-					location.reload();
-				}, 2000);
+					if(!redirectLocation) {
+						location.reload();
+					} else {
+						window.location.href = redirectLocation;
+					}
+				}, redirectTimeOut);
 			},
 			error: function(request, status, error) {
 				actionButton.text(actionButtonOriginalText);

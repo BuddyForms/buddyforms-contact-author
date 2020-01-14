@@ -34,6 +34,8 @@ function buddyforms_contact_author_include_assets() {
 		wp_localize_script( 'buddyforms-contact-author-script', 'buddyformsContactAuthor', array(
 			'ajax'     => admin_url( 'admin-ajax.php' ),
 			'nonce'    => wp_create_nonce( __DIR__ . 'buddyforms-contact-author' ),
+			'timeout'    => apply_filters( 'buddyforms_contact_author_timeout', 2000),
+			'redirect'    => apply_filters( 'buddyforms_contact_author_redirect', '' ),
 			'language' => apply_filters( 'buddyforms_contact_author_language', array(
 				'contact_author'        => __( 'Contact the Author', 'buddyforms-contact-author' ),
 				'error'                 => apply_filters( 'buddyforms_contact_author_invalid', __( 'There has been an error sending the message!', 'buddyforms-contact-author' ) ),
