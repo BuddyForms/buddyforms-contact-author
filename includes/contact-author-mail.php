@@ -48,7 +48,8 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
 			$contact_author_form->addElement( new Element_Textarea( $popup_input_message_label_string, 'contact_author_email_message_' . $post_id, array(
 				'value' => $contact_author_request_message,
 				'rows'  => '15',
-				'class' => ''
+				'class' => '',
+				'shortDesc' => apply_filters('buddyforms_contact_author_message_description', ''),
 			) ) );
 
 			$contact_author_form->render();
