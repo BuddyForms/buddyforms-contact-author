@@ -108,7 +108,45 @@ class BuddyFormsContactAuthor {
 	}
 
 	public function need_buddyforms() {
-		?><div class="notice notice-error"><p>Need <strong>BuddyForms Professional</strong> activated. Minimum version <i>2.5.10</i> required.</p></div><?php
+		?>
+		<style>
+			.buddyforms-notice label.buddyforms-title {
+				background: rgba(0, 0, 0, 0.3);
+				color: #fff;
+				padding: 2px 10px;
+				position: absolute;
+				top: 100%;
+				bottom: auto;
+				right: auto;
+				-moz-border-radius: 0 0 3px 3px;
+				-webkit-border-radius: 0 0 3px 3px;
+				border-radius: 0 0 3px 3px;
+				left: 10px;
+				font-size: 12px;
+				font-weight: bold;
+				cursor: auto;
+			}
+
+			.buddyforms-notice .buddyforms-notice-body {
+				margin: .5em 0;
+				padding: 2px;
+			}
+
+			.buddyforms-notice.buddyforms-title {
+				margin-bottom: 30px !important;
+			}
+
+			.buddyforms-notice {
+				position: relative;
+			}
+		</style>
+		<div class="error buddyforms-notice buddyforms-title">
+			<label class="buddyforms-title">BuddyForms Contact the Author</label>
+			<div class="buddyforms-notice-body">
+				<b>Oops...</b> BuddyForms Contact the Author cannot run without <a target="_blank" href="https://themekraft.com/buddyforms/">BuddyForms</a>.
+			</div>
+		</div>
+		<?php
 	}
 
 	/**
