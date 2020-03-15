@@ -1,0 +1,162 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: BuddyForms Contact the Author\n"
+"POT-Creation-Date: 2020-03-13 21:59-0300\n"
+"PO-Revision-Date: 2020-03-13 21:59-0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.3\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: buddyforms-contact-author.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
+"_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+
+#: includes/contact-author-mail.php:10 includes/form-elements.php:8
+#: includes/functions.php:40
+msgid "Contact the Author"
+msgstr "Contactar con el autor"
+
+#: includes/contact-author-mail.php:15
+msgid "Your eMail Address"
+msgstr "Tu dirección de correo electrónico (obligatorio)"
+
+#: includes/contact-author-mail.php:16
+msgid "Subject"
+msgstr "Asunto"
+
+#: includes/contact-author-mail.php:17
+msgid "Add a Message"
+msgstr "Añadir un mensaje"
+
+#: includes/form-elements.php:35
+msgid "Enable Contact Author for this form entries"
+msgstr "Habilitar el autor de contacto para este formulario entradas"
+
+#: includes/form-elements.php:35
+msgid "Add contact author button to the form"
+msgstr "Añadir botón de autor de contacto al formulario"
+
+#: includes/form-elements.php:40
+msgid "Logged in user only"
+msgstr "Solo usuario conectado"
+
+#: includes/form-elements.php:40
+msgid "Only logged in users can contact authors"
+msgstr ""
+"Solo los usuarios que han iniciado sesión pueden ponerse en contacto con "
+"los autores"
+
+#: includes/form-elements.php:45
+msgid "Action Position for Post"
+msgstr "Posición de acción para el puesto"
+
+#: includes/form-elements.php:47
+msgid "Not include"
+msgstr "No incluir"
+
+#: includes/form-elements.php:48
+msgid "Before the content"
+msgstr "Antes del contenido"
+
+#: includes/form-elements.php:49
+msgid "After the content"
+msgstr "Después del contenido"
+
+#: includes/form-elements.php:52
+msgid "Define the position where the contact author action will be added."
+msgstr ""
+"Defina la posición en la que se agregará la acción de autor de contacto."
+
+#: includes/form-elements.php:56
+msgid "Subject Text"
+msgstr "Texto del Asunto"
+
+#: includes/form-elements.php:73
+msgid "Message Text"
+msgstr "Texto del mensaje"
+
+#: includes/form-elements.php:75
+msgid ""
+"Click on one of the available shortcode to insert on the above element at "
+"caret position:"
+msgstr ""
+"Haga clic en uno de los shortcode disponibles para insertar en el elemento "
+"anterior en la posición del intercalado:"
+
+#: includes/functions.php:41 includes/functions.php:148
+msgid "There has been an error sending the message!"
+msgstr "¡Se ha producido un error al enviar el mensaje!"
+
+#: includes/functions.php:42 includes/functions.php:157
+msgid "Please enter a valid email address"
+msgstr "Por favor introduce una dirección de correo electrónico válida"
+
+#: includes/functions.php:43 includes/functions.php:164
+msgid "Please enter a valid Subject"
+msgstr "Por favor, introduzca un Asunto válido"
+
+#: includes/functions.php:44 includes/functions.php:171
+msgid "Please enter a valid Message"
+msgstr "Por favor, introduzca un mensaje válido"
+
+#: includes/functions.php:45 includes/functions.php:178
+msgid "Please check the form"
+msgstr "Por favor, compruebe el formulario"
+
+#: includes/functions.php:46
+msgid "Loading..."
+msgstr "Cargando..."
+
+#: includes/functions.php:47
+msgid "Complete"
+msgstr "Completo"
+
+#: includes/functions.php:402
+msgid "Offer is set to completed"
+msgstr "La oferta se establece en completa"
+
+#: includes/functions.php:418
+msgctxt "buddyforms-contact-author"
+msgid "Completed"
+msgstr "Completado"
+
+#: includes/functions.php:423
+#, php-format
+msgid "Unread <span class=\"count\">(%s)</span>"
+msgid_plural "Completed <span class=\"count\">(%s)</span>"
+msgstr[0] "No leído <span class=\"count\">(%s)</span>"
+msgstr[1] "Completado <span class=\"count\">(%s)</span>"
+
+#. Plugin Name of the plugin/theme
+msgid "BuddyForms Contact the Author"
+msgstr "BuddyForms Póngase en contacto con el autor"
+
+#. Plugin URI of the plugin/theme
+msgid "https://themekraft.com/products/contact-the-author/"
+msgstr "https://themekraft.com/products/contact-the-author/"
+
+#. Description of the plugin/theme
+msgid ""
+"Add a button to contact the author to your post listings and post single "
+"pages"
+msgstr ""
+"Añade un botón para ponerte en contacto con el autor en tus anuncios de "
+"publicación y publicar páginas individuales"
+
+#. Author of the plugin/theme
+msgid "ThemeKraft"
+msgstr "ThemeKraft"
+
+#. Author URI of the plugin/theme
+msgid "https://themekraft.com/"
+msgstr "https://themekraft.com/buddyforms/"

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bundle name="BuddyForms Contact the Author">
+  <domain name="buddyforms-contact-author">
+    <project name="BuddyForms Contact the Author" slug="buddyforms-contact-author">
+      <source>
+        <directory>.</directory>
+      </source>
+      <target>
+        <directory>languages</directory>
+      </target>
+    </project>
+  </domain>
+</bundle>

@@ -5,8 +5,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function buddyforms_contact_author_post( $post_id, $form_slug ) {
+	BuddyFormsContactAuthor::setNeedAssets( true, $form_slug );
 	global $buddyforms;
-	$post                    = get_post( $post_id );
+//	$post                    = get_post( $post_id );
 	$string_contact_author   = __( 'Contact the Author', 'buddyforms-contact-author' );
 	$popup_action_btn        = apply_filters( 'buddyforms_contact_author_action_btn', $string_contact_author, $form_slug, $post_id );
 	$popup_title             = apply_filters( 'buddyforms_contact_author_popup_title', $string_contact_author, $form_slug, $post_id );
@@ -17,7 +18,7 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
 	$popup_input_message_label_string = apply_filters( 'buddyforms_contact_author_popup_element_message', __( 'Add a Message', 'buddyforms-contact-author' ), $form_slug, $post_id );
 
 	?>
-	<?php echo '<a id="buddyforms-contact-author-from-post-id-' . $post_id . '" href="#TB_inline?width=800&height=600&inlineId=buddyforms_contact_author_modal_' . $post_id . '" title="' . $popup_title . '" class="thickbox buddyforms-contact-author-popup"><span aria-label="' . $popup_action_btn . '" title="' . $popup_action_btn . '" class="dashicons dashicons-email"> </span> ' . $popup_action_btn . '</a>'; ?>
+	<?php echo '<a id="buddyforms-contact-author-from-post-id-' . $post_id . '" href="#TB_inline?width=800&height=100%&inlineId=buddyforms_contact_author_modal_' . $post_id . '" title="' . $popup_title . '" class="thickbox buddyforms-contact-author-popup"><span aria-label="' . $popup_action_btn . '" title="' . $popup_action_btn . '" class="dashicons dashicons-email"> </span> ' . $popup_action_btn . '</a>'; ?>
 
 	<div id="buddyforms_contact_author_modal_<?php echo $post_id ?>" style="display:none;">
 		<div id="buddyforms_contact_author_wrap">
@@ -37,13 +38,13 @@ function buddyforms_contact_author_post( $post_id, $form_slug ) {
 
 			$contact_author_message_subject = isset( $buddyforms[ $form_slug ]['contact_author_message_subject'] ) ? $buddyforms[ $form_slug ]['contact_author_message_subject'] : '';
 			if ( ! empty( $contact_author_message_subject ) ) {
-				$contact_author_message_subject = buddyforms_contact_author_process_shortcode( $contact_author_message_subject, $post, $form_slug );
+				$contact_author_message_subject = buddyforms_contact_author_process_shortcode( $contact_author_message_subject, $post_id, $form_slug );
 			}
 			$contact_author_form->addElement( new Element_Textbox( $popup_input_subject_label_string, 'contact_author_email_subject_' . $post_id, array( 'value' => $contact_author_message_subject ) ) );
 
 			$contact_author_request_message = isset( $buddyforms[ $form_slug ]['contact_author_message_text'] ) ? $buddyforms[ $form_slug ]['contact_author_message_text'] : '';
 			if ( ! empty( $contact_author_request_message ) ) {
-				$contact_author_request_message = buddyforms_contact_author_process_shortcode( $contact_author_request_message, $post, $form_slug );
+				$contact_author_request_message = buddyforms_contact_author_process_shortcode( $contact_author_request_message, $post_id, $form_slug );
 			}
 			$contact_author_form->addElement( new Element_Textarea( $popup_input_message_label_string, 'contact_author_email_message_' . $post_id, array(
 				'value' => $contact_author_request_message,

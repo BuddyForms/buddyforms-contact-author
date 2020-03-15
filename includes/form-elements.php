@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function buddyforms_contact_author_admin_settings_sidebar_metabox() {
-	add_meta_box( 'buddyforms_contact_author', __( "Contact the Author", 'buddyforms' ), 'buddyforms_contact_author_admin_settings_sidebar_metabox_html', 'buddyforms', 'normal', 'low' );
+	add_meta_box( 'buddyforms_contact_author', __( "Contact the Author", 'buddyforms-contact-author' ), 'buddyforms_contact_author_admin_settings_sidebar_metabox_html', 'buddyforms', 'normal', 'low' );
 	add_filter( 'postbox_classes_buddyforms_buddyforms_contact_author', 'buddyforms_metabox_class' );
 }
 
@@ -32,24 +32,33 @@ function buddyforms_contact_author_admin_settings_sidebar_metabox_html() {
 	$contact_author_message_subject = isset( $buddyform['contact_author_message_subject'] ) ? $buddyform['contact_author_message_subject'] : '';
 	$contact_author_message_text    = isset( $buddyform['contact_author_message_text'] ) ? $buddyform['contact_author_message_text'] : '';
 
-	$form_setup[] = new Element_Checkbox( "<b>" . __( 'Enable Contact Author for this form entries', 'buddyforms' ) . "</b>", "buddyforms_options[contact_author]", array( "contact_author" => "Add contact author button to the form" ), array(
+	$form_setup[] = new Element_Checkbox( "<b>" . __( 'Enable Contact Author for this form entries', 'buddyforms-contact-author' ) . "</b>", "buddyforms_options[contact_author]", array( "contact_author" => __( "Add contact author button to the form", 'buddyforms-contact-author' ) ), array(
 		'value'     => $contact_author,
-		'shortDesc' => __( '', 'buddyforms' )
 	) );
 
 	$contact_author_logged_in_only = isset( $buddyform['contact_author_logged_in_only'] ) ? $buddyform['contact_author_logged_in_only'] : '';
-	$form_setup[]                  = new Element_Checkbox( "<b>" . __( 'Logged in user only', 'buddyforms' ) . "</b>", "buddyforms_options[contact_author_logged_in_only]", array( "logged_in_only" => "Only logged in users can contact authors" ), array(
+	$form_setup[]                  = new Element_Checkbox( "<b>" . __( 'Logged in user only', 'buddyforms-contact-author' ) . "</b>", "buddyforms_options[contact_author_logged_in_only]", array( "logged_in_only" => __( "Only logged in users can contact authors", 'buddyforms-contact-author' ) ), array(
 		'value'     => $contact_author_logged_in_only,
-		'shortDesc' => __( '', 'buddyforms' )
 	) );
 
-	$form_setup[] = new Element_Textbox( "<b>" . __( 'Subject Text', 'buddyforms' ) . "</b>", "buddyforms_options[contact_author_message_subject]", array(
+	$contact_author_logged_in_only                   = isset( $buddyform['contact_author_post_action_position'] ) ? $buddyform['contact_author_post_action_position'] : '';
+	$form_setup[] = new Element_Select( '<b>' . __( 'Action Position for Post', 'buddyforms-contact-author' ) . '</b>', "buddyforms_options[contact_author_post_action_position]",
+		array(
+			'none' => __( 'Not include', 'buddyforms-contact-author' ),
+			'before' => __( 'Before the content', 'buddyforms-contact-author' ),
+			'after' => __( 'After the content', 'buddyforms-contact-author' ),
+		), array(
+			'value'    => $contact_author_logged_in_only,
+			'shortDesc' => __( 'Define the position where the contact author action will be added.', 'buddyforms-contact-author' )
+		)
+	);
+
+	$form_setup[] = new Element_Textbox( "<b>" . __( 'Subject Text', 'buddyforms-contact-author' ) . "</b>", "buddyforms_options[contact_author_message_subject]", array(
 		'value'     => $contact_author_message_subject,
-		'shortDesc' => __( '', 'buddyforms' )
 	) );
 
 	$all_shortcodes       = array();
-	$element_name    = 'buddyforms_options[contact_author_message_text]';
+	$element_name         = 'buddyforms_options[contact_author_message_text]';
 	$available_shortcodes = buddyforms_available_shortcodes( $buddyform['slug'], $element_name );
 	if ( ! empty( $buddyform['form_fields'] ) ) {
 		foreach ( $buddyform['form_fields'] as $form_field ) {
@@ -61,9 +70,9 @@ function buddyforms_contact_author_admin_settings_sidebar_metabox_html() {
 
 	$all_shortcodes  = array_merge( $all_shortcodes, $available_shortcodes );
 	$shortcodes_html = buddyforms_get_shortcode_string( $all_shortcodes, $element_name );
-	$form_setup[]    = new Element_Textarea( "<b>" . __( 'Message Text', 'buddyforms' ) . "</b>", $element_name, array(
+	$form_setup[]    = new Element_Textarea( "<b>" . __( 'Message Text', 'buddyforms-contact-author' ) . "</b>", $element_name, array(
 		'value'     => $contact_author_message_text,
-		'shortDesc' => '<strong>' . __( 'Click on one of the available shortcode to insert on the above element at caret position:', 'buddyforms' ) . '</strong><br/>' . $shortcodes_html
+		'shortDesc' => '<strong>' . __( 'Click on one of the available shortcode to insert on the above element at caret position:', 'buddyforms-contact-author' ) . '</strong><br/>' . $shortcodes_html
 	) );
 
 	buddyforms_display_field_group_table( $form_setup );

@@ -11,6 +11,7 @@
 	 transform: translateX(-50%) translateY(-50%) !important;
 	max-height: 100%;
 	width: 90% !important;
+	height: auto !important;
 	min-height: 400px;
 	min-width: 300px;
 	margin-left: unset !important;
@@ -58,4 +59,12 @@
 	#TB_window {
 		width: 90% !important;
 	}
+}
+
+.buddyforms_contact_author_action_container {
+    padding: 5px;
+}
+
+.buddyforms_contact_author_action_container span.dashicons.dashicons-email {
+    margin-top: 3px;
 }
