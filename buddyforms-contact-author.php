@@ -99,14 +99,26 @@ class BuddyFormsContactAuthor {
 	 * @since 1.0
 	 */
 	public function includes() {
+		$freemius = self::get_freemius();
 		if ( self::is_buddy_form_active() ) {
-			require_once BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH . 'form-elements.php';
-			require_once BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH . 'functions.php';
-			require_once BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH . 'contact-author-mail.php';
-			require_once BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH . 'shortcode.php';
+			if ( ! empty( $freemius ) && $freemius->is_paying_or_trial() ) {
+				require_once BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH . 'form-elements.php';
+				require_once BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH . 'functions.php';
+				require_once BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH . 'contact-author-mail.php';
+				require_once BUDDYFORMS_CONTACT_AUTHOR_INCLUDES_PATH . 'shortcode.php';
+			}
 		} else {
 			add_action( 'admin_notices', array( $this, 'need_buddyforms' ) );
 		}
+	}
+
+	/**
+	 * @return Freemius
+	 */
+	public static function get_freemius() {
+		global $buddyforms_contact_author_fs;
+
+		return $buddyforms_contact_author_fs;
 	}
 
 	public function need_buddyforms() {
