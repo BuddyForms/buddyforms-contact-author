@@ -15,17 +15,14 @@
       "email": "gfirem@gmail.com"
     }
   ],
-  "minimum-stability": "stable",
   "require": {
     "php": ">=5.2"
   },
-  "require-dev": {
-    "bruli/php-git-hooks": "^5.1"
-  },
+  "require-dev": {},
   "scripts": {
     "package": "sh .tk/package.sh loader",
     "wp-release": "sh .tk/wp_release.sh",
-    "beta-release": "sh .tk/full-deploy.sh buddyforms-contact-author 5264 false beta",
-    "full-release": "sh .tk/full-deploy.sh buddyforms-contact-author 5264 false released"
+    "beta-release": "sh .tk/full-deploy.sh buddyforms-contact-author 5721 false beta",
+    "full-release": "sh .tk/full-deploy.sh buddyforms-contact-author 5721 false released"
   }
 }

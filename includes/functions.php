@@ -55,15 +55,6 @@ function buddyforms_contact_author_include_assets() {
 add_action( 'wp_footer', 'buddyforms_contact_author_include_assets' );
 
 
-function buddyforms_contact_author_available_shortcodes( $shortcodes, $form_slug, $element_name ) {
-	$shortcodes[] = '[complete_offer_link]';
-
-	return $shortcodes;
-}
-
-add_filter( 'buddyforms_available_shortcodes', 'buddyforms_contact_author_available_shortcodes', 10, 3 );
-
-
 function buddyforms_contact_author_unauthorized_field_type( $shortcodes, $form_slug, $element_name ) {
 	if ( ! empty( $element_name ) && strpos( $element_name, 'contact_author_message_text' ) > 0 ) {
 		$shortcodes[] = 'email';
@@ -215,6 +206,9 @@ function buddyforms_contact_author() {
 
 		$email_body = buddyforms_contact_author_process_shortcode( $email_body, $post_id, $form_slug_parent );
 
+		$email_body = apply_filters( 'the_content', $email_body );
+		$email_body = str_replace( ']]>', ']]&gt;', $email_body );
+
 		$subject = buddyforms_contact_author_process_shortcode( $subject, $post_id, $form_slug_parent );
 
 		$email_body = nl2br( $email_body );
@@ -239,6 +233,9 @@ add_action( 'wp_ajax_nopriv_buddyforms_contact_author', 'buddyforms_contact_auth
 function buddyforms_contact_author_action_content( $post_id, $form_slug ) {
 	global $buddyforms;
 	if ( empty( $post_id ) || empty( $form_slug ) || empty( $buddyforms ) || empty( $buddyforms[ $form_slug ] ) ) {
+		return '';
+	}
+	if ( isset( $buddyforms[ $form_slug ]['contact_author_logged_in_only'] ) && ! is_user_logged_in() ) {
 		return '';
 	}
 	$action_content = '';
