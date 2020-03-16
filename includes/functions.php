@@ -235,6 +235,9 @@ function buddyforms_contact_author_action_content( $post_id, $form_slug ) {
 	if ( empty( $post_id ) || empty( $form_slug ) || empty( $buddyforms ) || empty( $buddyforms[ $form_slug ] ) ) {
 		return '';
 	}
+	if ( empty( $buddyforms[ $form_slug ]['contact_author'] ) ) {
+		return '';
+	}
 	if ( isset( $buddyforms[ $form_slug ]['contact_author_logged_in_only'] ) && ! is_user_logged_in() ) {
 		return '';
 	}
@@ -437,6 +440,9 @@ function buddyforms_contact_author_post_action_for_post_content( $content ) {
 		$form_slug = buddyforms_get_form_slug_by_post_id( $post_id );
 		if ( ! empty( $form_slug ) ) {
 			global $buddyforms;
+			if ( empty( $buddyforms[ $form_slug ]['contact_author'] ) ) {
+				return $content;
+			}
 			if ( isset( $buddyforms[ $form_slug ]['contact_author_logged_in_only'] ) && ! is_user_logged_in() ) {
 				return $content;
 			}

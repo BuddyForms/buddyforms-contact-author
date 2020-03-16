@@ -7,6 +7,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 function buddyforms_contact_author_post( $post_id, $form_slug ) {
 	BuddyFormsContactAuthor::setNeedAssets( true, $form_slug );
 	global $buddyforms;
+	if ( empty( $buddyforms[ $form_slug ]['contact_author'] ) ) {
+		return '';
+	}
 //	$post                    = get_post( $post_id );
 	$string_contact_author   = __( 'Contact the Author', 'buddyforms-contact-author' );
 	$popup_action_btn        = apply_filters( 'buddyforms_contact_author_action_btn', $string_contact_author, $form_slug, $post_id );
