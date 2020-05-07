@@ -212,8 +212,8 @@ function buddyforms_contact_author() {
 		$subject = buddyforms_contact_author_process_shortcode( $subject, $post_id, $form_slug_parent );
 
 		$email_body = nl2br( $email_body );
-		$email_cc   = apply_filters( 'buddyforms_contact_author_email_cc', $form_slug_parent, $post_id );
-		$email_bcc  = apply_filters( 'buddyforms_contact_author_email_bcc', $form_slug_parent, $post_id );
+		$email_cc   = apply_filters( 'buddyforms_contact_author_email_cc', array(),$form_slug_parent, $post_id );
+		$email_bcc  = apply_filters( 'buddyforms_contact_author_email_bcc', array(), $form_slug_parent, $post_id );
 		$result     = buddyforms_email( $mail_to, $subject, $from_email, $from_email, $email_body, $email_cc, $email_bcc, $form_slug_parent, $post_id );
 
 		if ( ! $result ) {
