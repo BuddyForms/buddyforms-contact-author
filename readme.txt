@@ -2,8 +2,8 @@
 Contributors: svenl77, gfirem, themekraft
 Tags: contact author, buddyforms, contact the author, email the author, reach the author, buddyforms contact the author
 Requires at least: 4.9
-Tested up to: 5.3
-Stable tag: 1.0.1
+Tested up to: 6.1.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -54,6 +54,12 @@ If you still get stuck somewhere, our support gets you back on the right track. 
 
 
 == Changelog ==
+= 1.0.2 - 16 Jan 2023 =
+* Fixed issue with email notification.
+* Updated duration of trial version.
+* Fixed security issue.
+* Tested up to WordPress 6.1.1
+
 = 1.0.1 - 16 March 2020 =
 * Going public.
 

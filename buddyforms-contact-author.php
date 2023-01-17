@@ -4,7 +4,7 @@
  * Plugin Name: BuddyForms Contact the Author
  * Plugin URI: https://themekraft.com/products/contact-the-author/
  * Description: Add a button to contact the author to your post listings and post single pages
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: ThemeKraft
  * Author URI: https://themekraft.com/
  * License: GPLv2 or later
@@ -38,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class BuddyFormsContactAuthor {
 
 	public static $include_assets = array();
-	public static $version = '1.0.1';
+	public static $version = '1.0.2';
 	public static $slug = 'buddyforms-contact-author';
 	/**
 	 * Instance of this class
@@ -264,7 +264,7 @@ if ( ! function_exists( 'buddyforms_contact_author_fs' ) ) {
 					'has_paid_plans'   => true,
 					'is_org_compliant' => false,
 					'trial'            => array(
-						'days'               => 14,
+						'days'               => 7,
 						'is_require_payment' => false,
 					),
 					'parent'           => array(
@@ -277,9 +277,7 @@ if ( ! function_exists( 'buddyforms_contact_author_fs' ) ) {
 						'first-path' => 'plugins.php',
 						'support'    => false,
 					),
-					// Set the SDK to work in a sandbox mode (for development & testing).
-					// IMPORTANT: MAKE SURE TO REMOVE SECRET KEY BEFORE DEPLOYMENT.
-					'secret_key'       => 'sk_6R-TDRD<nF5dK?ai5(qoGEhb0x~Io',
+					'bundle_license_auto_activation' => true,
 				) );
 			} catch ( Freemius_Exception $e ) {
 				return false;
